@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>web0 manifesto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Annie+Use+Your+Telescope&family=Fira+Code:wght@600&family=Reenie+Beanie&display=swap" rel="stylesheet">
+  <link rel='stylesheet' href='styles.css'>
+</head>
+<body>
+  <section id='manifesto'>
+    <h1><span class='web0'>web0</span> manifesto</h1>
+    <p><span class='web0'>web0</span> is the decentralised web.</p>
+    <p>In other words, <span class='web0'>web0</span> is <em>web3 without all the bullshit.</em></p>
+    <ol>
+      <li>web3 = <strong>decentralisation</strong> + blockchain + NFTs + metaverse</li>
+      <li><strong>web0</strong> = web3 - blockchain - NFTs - metaverse</li>
+      <li><strong>web0 = decentralisation</strong></li>
+    </ol>
+  </section>
+  <form id='sign' action='/sign' method='POST'>
+    <h2>Sign</h2>
+    <ul>
+      <li>
+        <label for='signatory'>Person, project, or organisation name</label>
+        <input id='signatory' name='signatory' type='text'/>
+      </li>
+      <li>
+        <label for='link'>Link</label>
+        <input id='link' name='link' type='text' />
+      </li>
+      <li>
+        <label for='name'>Your name <small>(if different from above; will not be displayed)</small></label>
+        <input id='name' name='name'type='text'/>
+      </li>
+      <li>
+        <label for='email'>Your email <small>(used to verify your signature; will not be displayed)</small></label>
+        <input id='email' name='email' type='text'  placeholder=''/>
+      </li>
+      <li>
+        <p class='authorisation'>I have the authorisation of the person, project, or organisation above to sign this form in their name.</p>
+        <input type='submit' value='Sign the manifesto'></input>
+      </li>
+    </ul>
+  </form>
+
+  <h2>Signed</h2>
+
+  <ul id='signatories'>
+    <li><a href='https://small-tech.org'>Small Technology Foundation</a></li>
+    <li><a href='https://small-web.org/'>Small Web</a></li>
+    <li><a href='https://ar.al'>Aral Balkan</a></li>
+    <li><a href='https://laurakalbag.com'>Laura Kalbag</a></li>
+  </ul>
+
+  <footer>
+    <p>Made with ♥ by <a href='https://small-tech.org'>Small Technology Foundation</a></p> <p><strong>Like this? <a href='https://small-tech.org/fund-us'>Fund us!</a></strong></p>
+  </footer>
+
+</body>
+</html>

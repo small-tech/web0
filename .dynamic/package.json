@@ -1,0 +1,14 @@
+{
+  "name": "web0",
+  "version": "1.0.0",
+  "description": "web0 web site backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "nodemailer": "^6.7.2"
+  }
+}
