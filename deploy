@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+site --sync-to=site@web0.small-web.org:public
+
