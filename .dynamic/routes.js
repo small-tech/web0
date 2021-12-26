@@ -11,8 +11,8 @@ module.exports = app => {
   console.log('   🔵    ❨web0❩ Starting SMTP server.')
 
   const tlsCertificatePath = path.join(os.homedir(), '.small-tech.org', 'site.js', 'tls', 'global', 'production', os.hostname())
-  const certPath = path.join(tlsCertificatePath, 'certificate.pem')           // Secret key path.
-  const keyPath = path.join(tlsCertificatePath, 'certificate-identity.pem')
+  const keyPath = path.join(tlsCertificatePath, 'certificate-identity.pem') // Secret key path.
+  const certPath = path.join(tlsCertificatePath, 'certificate.pem')
 
   //
   // SMTP Server configuration.
@@ -20,8 +20,10 @@ module.exports = app => {
 
   const key = fs.readFileSync(keyPath)
   const cert = fs.readFileSync(certPath)
-  const secure = true
+  // const secure = true
   const size = 51200
+  const banner = 'Welcome to the web0 SMTP Server'
+  const disabledCommands = ['AUTH']
 
   // There’s no reason for anyone to sign into our simple server.
   const onAuth = (auth, session, callback) => {
@@ -45,7 +47,8 @@ module.exports = app => {
 
   const server = new SMTPServer({
     size,
-    secure,
+    // secure,
+    disabledCommands,
     key,
     cert,
     onAuth,
