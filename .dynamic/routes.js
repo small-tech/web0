@@ -25,9 +25,21 @@ module.exports = app => {
   const banner = 'Welcome to the web0 SMTP Server'
   const disabledCommands = ['AUTH']
 
-  // There’s no reason for anyone to sign into our simple server.
-  const onAuth = (auth, session, callback) => {
-    callback(new Error("Authentication is not supported."))
+  const onConnect = (session, callback) => {
+    console.log('   🔵    ❨web0❩ Starting new session with email client.')
+    console.log(session)
+
+    // Always accept the connection.
+    callback()
+  }
+
+  const onMailFrom = (address, session, callback) => {
+    console.log('   🔵    ❨web0❩ Got mail from command.')
+    console.log('address', address)
+    console.log('session', session)
+
+    // Accept all addresses that pass Nodemailer’s own cursory tests.
+    callback ()
   }
 
   const onRcptTo = (address, session, callback) => {
@@ -45,15 +57,22 @@ module.exports = app => {
     stream.on('end', callback)
   }
 
+  const onClose = session => {
+    console.log('   🔵    ❨web0❩ Got mail from command.')
+    console.log('session', session)
+  }
+
   const server = new SMTPServer({
-    size,
-    // secure,
+    banner,
     disabledCommands,
-    key,
     cert,
-    onAuth,
+    key,
+    size,
+    onConnect,
+    onMailFrom,
     onRcptTo,
-    onData
+    onData,
+    onClose
   })
 
   server.on('error', error => {
