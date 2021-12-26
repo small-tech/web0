@@ -45,6 +45,7 @@ module.exports = app => {
   const onRcptTo = (address, session, callback) => {
     // First check size.
     // TODO.
+    console.log('   🔵    ❨web0❩ Got rcpt to command.')
 
     // There’s only one account here.
     return address.address === 'computer@web0.small-web.org' ?
@@ -58,7 +59,7 @@ module.exports = app => {
   }
 
   const onClose = session => {
-    console.log('   🔵    ❨web0❩ Got mail from command.')
+    console.log('   🔵    ❨web0❩ Email client closed (got quit command).')
     console.log('session', session)
   }
 
