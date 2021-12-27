@@ -25,6 +25,8 @@ module.exports = app => {
   const banner = 'Welcome to the web0 SMTP Server'
   const disabledCommands = ['AUTH']
 
+  const sessions = {}
+
   const onConnect = (session, callback) => {
     console.log('   🔵    ❨web0❩ Starting new session with email client.')
     console.log(session)
@@ -53,9 +55,25 @@ module.exports = app => {
       callback(new Error("Address not found."))
   }
 
+  // Called when a readable stream is available for the email.
   const onData = (stream, session, callback) => {
-    stream.pipe(process.stdout)
-    stream.on('end', callback)
+
+    const sessionId = session.id
+
+    // Persist session in local memory.
+    sessions[session.id] = {
+      session,
+      data: ''
+    }
+
+    stream.on('data', chunk => {
+      sessions[sessionId].data += chunk.toString('utf-8')
+    })
+
+    stream.on('end', () => {
+      console.log('Message received', sessions[sessionId].data)
+      callback()
+    })
   }
 
   const onClose = session => {
