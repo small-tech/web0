@@ -27,10 +27,26 @@ module.exports = app => {
   const banner = 'Welcome to the web0 SMTP Server'
   const disabledCommands = ['AUTH']
 
-  const sessions = {}
+  const forwardEmailWithSessionIdToHumans = message => {
+    const text = `Hello,
 
-  const forwardEmailWithSessionIdToHumans = sessionId => {
-    const
+Thanks for writing in. I’m CCing in Laura and Aral at Small Technology Foundation so you can talk to a human being.
+
+Lots of love,
+Computer @ web0.small-web.org
+
+> From: ${message.from}
+> To: ${message.to}
+${message.cc != undefined ? `> CC: ${message.cc}` : ''}
+> Sent: ${message.date}
+>
+${message.text.split('\n').map(line => `> ${line}`).join('\n')}
+`
+    try {
+      sendMail('hello@small-tech.org', `FWD: ${message.subject}`, text, 'hello@small-tech.org')
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const onConnect = (session, callback) => {
@@ -69,16 +85,14 @@ module.exports = app => {
     const sessionId = session.id
 
     // Persist session in local memory.
+    let message
     try {
-      sessions[session.id] = {
-        session,
-        message: await simpleParser(stream)
-      }
+      message =  await simpleParser(stream)
     } catch (error) {
       return console.error(error)
     }
 
-    forwardEmailWithSessionIdToHumans(sessionId)
+    forwardEmailWithSessionIdToHumans(message)
   }
 
   const onClose = session => {
