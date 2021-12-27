@@ -1,22 +1,13 @@
-const nodemailer = require('nodemailer')
-const dns = require('dns')
-const fs = require('fs')
-const os = require('os')
-const path = require('path')
+const crypto = require('crypto')
+const { debugPort } = require('process')
+const sendMail = require('../sendMail')
 
-//
-// SMTP constants.
-//
-
-// DKIM
-const privateKeyPath = path.join(os.homedir(), '.small-tech.org', 'web0.small-web.org', 'dkim_private.pem')
-const privateKey = fs.readFileSync(privateKeyPath).toString('utf-8')
-const domainName = 'web0.small-web.org'
-const keySelector = 'dkim'
-
-const port = 25
-const direct = true
-const requireTLS = true
+// Initialise the JSDB database table if if doesn’t already exist.
+if (db.pendingSignatories == undefined) {
+  db.pendingSignatories = {}
+  db.confirmationCodesToSignatoryEmails = {}
+  db.confirmedSignatories = {}
+}
 
 module.exports = async function (request, response) {
   const signatory = request.body.signatory
@@ -26,33 +17,37 @@ module.exports = async function (request, response) {
 
   // Basic validation on inputs.
   if (signatory == undefined || link == undefined || name == undefined || email == undefined) {
-    response.redirect('/')
-    return
+    return response.redirect('/')
   }
 
-  // Find the mail exchange (MX) server for the provided email address.
-  const emailDomain = email.split('@')[1]
-  const mx = await dns.promises.resolveMx(emailDomain)
+  // Ensure signatory with given email is not waiting for confirmation.
+  if (db.pendingSignatories[email] != undefined) {
+    // TODO: Handle better.
+    console.error(`A request to sign with email ${email} already exists, pending confirmation.`)
+    return response.redirect('/')
+  }
 
-  if (mx.length > 0) {
-    // OK, mail server found.
-    // Just use the first server returned.
-    const host = mx[0].exchange === 'mx.ethereal.email' ? 'smtp.ethereal.email' : mx[0].exchange
+  // Ensure confirmed signatory with given email does not exist.
+  if (db.confirmedSignatories[email] != undefined) {
+    // TODO: Handle better.
+    console.error(`Person/organisation with ${email} is already a signatory.`)
+    return response.redirect('/')
+  }
 
-    // Create transporter to talk directly to mail server for provided email address.
-    const transporter = nodemailer.createTransport({
-      host,
-      direct,
-      requireTLS,
-      port,
-      dkim: {
-        domainName,
-        keySelector,
-        privateKey
-      }
-    })
+  // Create the signatory object and persist it in the database.
+  db.pendingSignatories[email] = {
+    signatory,
+    email,
+    name,
+    link
+  }
 
-    const text = `Hello ${name.split(' ')[0]},
+  // Create a random hash for the validation URL
+  // and map that to the pending signatory.
+  const confirmationCode = crypto.randomBytes(16).toString('hex')
+  db.confirmationCodesToSignatoryEmails[confirmationCode] = email
+
+  const text = `Hello ${name.split(' ')[0]},
 
 You (or someone who gave us your email address) has asked to sign the web0 manifesto (https://web0.small-web.org) on behalf of ${signatory}.
 
@@ -60,37 +55,22 @@ If this is not you, please ignore this email.
 
 If this is you and you want to confirm your signature, please follow the link below:
 
-https://web0.small-web.org
+https://web0.small-web.org/confirm/${confirmationCode}
 
 Thank you.
 
-Computer @ web0 manifesto
+Computer @ web0.small-web.org
 Sent on behalf of the humans at Small Technology Foundation.
 --
 Want to talk to a human being?
-Email us at hello@small-tech.org
+Just hit reply and I’ll CC in the folks at hello@small-tech.org for you.
 https://small-tech.org`
 
-    // Create email message.
-    const message = {
-      from: 'computer@web0.small-web.org',
-      to: email,
-      subject: 'web0 manifesto signature confirmation request',
-      text
-    }
-
-    transporter.sendMail(message, (error, info) => {
-      if (error) {
-        console.log(error)
-        response.redirect('/')
-      } else {
-        response.redirect('/step2.html')
-        console.log(info)
-      }
-    })
-  } else {
-    console.log(`No mail server found for ${email} (no mail exchange record found)`)
+  try {
+    const result = await sendMail(email, 'web0 manifesto signature confirmation request', text)
+    console.info(result)
+  } catch (error) {
+    console.error(error)
     response.redirect('/')
-    return
   }
 }

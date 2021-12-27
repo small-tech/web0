@@ -8,7 +8,7 @@ module.exports = app => {
   // location to carry out one-time global initialisation for the
   // SMTP server.
 
-  console.log('   🔵    ❨web0❩ Starting SMTP server.')
+  console.log('   📬    ❨web0❩ Starting SMTP server.')
 
   const tlsCertificatePath = path.join(os.homedir(), '.small-tech.org', 'site.js', 'tls', 'global', 'production', os.hostname())
   const keyPath = path.join(tlsCertificatePath, 'certificate-identity.pem') // Secret key path.
@@ -27,8 +27,12 @@ module.exports = app => {
 
   const sessions = {}
 
+  const forwardEmailWithSessionIdToHumans = sessionId => {
+    
+  }
+
   const onConnect = (session, callback) => {
-    console.log('   🔵    ❨web0❩ Starting new session with email client.')
+    console.log('   📬    ❨web0❩ Starting new session with email client.')
     console.log(session)
 
     // Always accept the connection.
@@ -36,7 +40,7 @@ module.exports = app => {
   }
 
   const onMailFrom = (address, session, callback) => {
-    console.log('   🔵    ❨web0❩ Got mail from command.')
+    console.log('   📬    ❨web0❩ Got mail from command.')
     console.log('address', address)
     console.log('session', session)
 
@@ -47,7 +51,7 @@ module.exports = app => {
   const onRcptTo = (address, session, callback) => {
     // First check size.
     // TODO.
-    console.log('   🔵    ❨web0❩ Got rcpt to command.')
+    console.log('   📬    ❨web0❩ Got rcpt to command.')
 
     // There’s only one account here.
     return address.address === 'computer@web0.small-web.org' ?
@@ -66,18 +70,20 @@ module.exports = app => {
       data: ''
     }
 
+    console.log('onData: session =', session)
+
     stream.on('data', chunk => {
       sessions[sessionId].data += chunk.toString('utf-8')
     })
 
     stream.on('end', () => {
-      console.log('Message received', sessions[sessionId].data)
       callback()
+      forwardEmailWithSessionIdToHumans(sessionId)
     })
   }
 
   const onClose = session => {
-    console.log('   🔵    ❨web0❩ Email client closed (got quit command).')
+    console.log('   📬    ❨web0❩ Email client closed (got quit command).')
     console.log('session', session)
   }
 
@@ -101,9 +107,9 @@ module.exports = app => {
 
   // Clean up the mail server when the main server is shutting down.
   app.site.server.on('close', async () => {
-    console.log('   🔵    ❨web0❩ Main server shutdown detected, asking mail server to close.')
+    console.log('   📬    ❨web0❩ Main server shutdown detected, asking mail server to close.')
     server.close(() => {
-      console.log('   🔵    ❨web0❩ Mail server closed.')
+      console.log('   📬    ❨web0❩ Mail server closed.')
     })
   })
 
