@@ -2,6 +2,8 @@ const os = require('os')
 const fs = require('fs')
 const path = require('path')
 const SMTPServer = require('smtp-server').SMTPServer
+const simpleParser = require('mailparser').simpleParser
+const sendMail = require('./sendMail')
 
 module.exports = app => {
   // We don’t have any custom routes. We’re just using this as a convenient
@@ -28,7 +30,7 @@ module.exports = app => {
   const sessions = {}
 
   const forwardEmailWithSessionIdToHumans = sessionId => {
-    
+    const
   }
 
   const onConnect = (session, callback) => {
@@ -60,26 +62,23 @@ module.exports = app => {
   }
 
   // Called when a readable stream is available for the email.
-  const onData = (stream, session, callback) => {
+  const onData = async (stream, session, callback) => {
+
+    console.log('onData: session =', session)
 
     const sessionId = session.id
 
     // Persist session in local memory.
-    sessions[session.id] = {
-      session,
-      data: ''
+    try {
+      sessions[session.id] = {
+        session,
+        message: await simpleParser(stream)
+      }
+    } catch (error) {
+      return console.error(error)
     }
 
-    console.log('onData: session =', session)
-
-    stream.on('data', chunk => {
-      sessions[sessionId].data += chunk.toString('utf-8')
-    })
-
-    stream.on('end', () => {
-      callback()
-      forwardEmailWithSessionIdToHumans(sessionId)
-    })
+    forwardEmailWithSessionIdToHumans(sessionId)
   }
 
   const onClose = session => {
