@@ -28,7 +28,7 @@ module.exports = app => {
   const disabledCommands = ['AUTH']
 
   const forwardEmailWithSessionIdToHumans = message => {
-    const text = `Hello ${message.from.name.split(' ')[0]},
+    const text = `Hello,,
 
 Thanks for writing in.
 
@@ -37,14 +37,14 @@ I’m CCing Laura and Aral at Small Technology Foundation so you can talk to a h
 Lots of love,
 Computer @ web0.small-web.org
 
-> From: ${message.from.name} <${message.from.address}>
+> From: ${message.from.address}
 > To: ${message.to.address}${message.cc != undefined ? `\n> CC: ${message.cc}` : ''}
 > Sent: ${message.date}
 >
 ${message.text.split('\n').map(line => `> ${line}`).join('\n')}
 `
     try {
-      sendMail(`${message.from.name} <${message.from.address}>`, `FWD: ${message.subject}`, text, 'Small Technology Foundation <hello@small-tech.org>')
+      sendMail(message.from.address, `FWD: ${message.subject}`, text, 'hello@small-tech.org')
     } catch (error) {
       console.error(error)
     }
