@@ -44,7 +44,7 @@ Computer @ web0.small-web.org
 ${message.text.split('\n').map(line => `> ${line}`).join('\n')}
 `
     try {
-      sendMail(`${message.from.value[0].name} <${message.from.value[0].address}`, `FWD: ${message.subject}`, text, 'Small Technology Foundation <hello@small-tech.org>')
+      sendMail(message.from.value[0].address, `FWD: ${message.subject}`, text, 'hello@small-tech.org')
     } catch (error) {
       console.error(error)
     }
