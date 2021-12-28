@@ -36,17 +36,18 @@ module.exports = app => {
     return name
   }
 
-  const forwardEmailWithSessionIdToHumans = message => {
+  const forwardEmailWithSessionIdToHumans = (message, session) => {
 
-    const from = message.from.value[0]
-    const to = message.to.value[0]
-
-    if (from == undefined || to == undefined) {
-      return console.error('Will not forward email, from or to field is missing.')
+    // Sanity check. Ensure the mail envelope is correct before continuing.
+    if (session.envelope == undefined || session.envelope.mailFrom == undefined || session.envelope.rcptTo == undefined || session.envelope.rcptTo.length === 0) {
+      return console.error('Cannot forward email. Message envelope is wrong.', session)
     }
 
-    let fromName = getNameFromAddressObject(from)
-    let toName = getNameFromAddressObject(to)
+    const fromAddress = session.envelope.mailFrom.address
+    const toAddress = session.envelope.rcptTo[0].address
+
+    const fromName = message.from == undefined ? '' : getNameFromAddressObject(from)
+    const toName = message.to == undefined ? '' : getNameFromAddressObject(to)
 
     const text = `Hello${fromName},
 
@@ -57,14 +58,14 @@ I’m CCing Laura and Aral at Small Technology Foundation so you can talk to a h
 Lots of love,
 Computer @ web0.small-web.org
 
-> From:${fromName} <${from.address}>
-> To:${toName} ${to.address}${message.cc != undefined ? `\n> CC: ${message.cc}` : ''}
+> From:${fromName} <${fromAddress}>
+> To:${toName} ${toAddress}${message.cc != undefined ? `\n> CC: ${message.cc}` : ''}
 > Sent: ${message.date}
 >
 ${message.text.split('\n').map(line => `> ${line}`).join('\n')}
 `
     try {
-      sendMail(fromAddress, `FWD: ${message.subject}`, text, 'hello@small-tech.org')
+      sendMail(fromAddress, `FWD: ${message.subject}`, text, 'hello+web0@small-tech.org')
     } catch (error) {
       console.error(error)
     }
@@ -109,7 +110,7 @@ ${message.text.split('\n').map(line => `> ${line}`).join('\n')}
     // the email has been received so servers do not keep retrying.
     // (The simplerParser, used below, does not automatically do this, it
     // only parses the received message.)
-    // stream.on('end', callback)
+    stream.on('end', callback)
 
     // Persist session in local memory.
     let message
@@ -121,7 +122,7 @@ ${message.text.split('\n').map(line => `> ${line}`).join('\n')}
 
     console.log('message', message)
 
-    forwardEmailWithSessionIdToHumans(message)
+    forwardEmailWithSessionIdToHumans(message, session)
   }
 
   const onClose = session => {
