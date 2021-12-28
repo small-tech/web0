@@ -7,8 +7,12 @@ module.exports = (request, response) => {
   if (signatoryEmail) {
     // Move the signatory from the pending list to the confirmed list and
     // redirect to the index.
-    db.confirmedSignatories[signatoryEmail] = db.pendingSignatories[signatoryEmail]
+    db.confirmedSignatories.push(db.pendingSignatories[signatoryEmail])
+
+    // Clean up.
     delete db.pendingSignatories[signatoryEmail]
+    delete db.confirmationCodesToSignatoryEmails[code]
+
     // TODO: Display a success message too.
     response.redirect('/')
   } else {

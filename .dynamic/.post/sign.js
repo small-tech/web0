@@ -5,7 +5,7 @@ const sendMail = require('../sendMail')
 if (db.pendingSignatories == undefined) {
   db.pendingSignatories = {}
   db.confirmationCodesToSignatoryEmails = {}
-  db.confirmedSignatories = {}
+  db.confirmedSignatories = []
 }
 
 module.exports = async function (request, response) {
