@@ -110,12 +110,6 @@ ${message.text.split('\n').map(line => `> ${line}`).join('\n')}
     // time we get past the async await of the parser.
     const envelope = session.envelope
 
-    // Add a handler for the stream end event so that we can acknowledge
-    // the email has been received so servers do not keep retrying.
-    // (The simplerParser, used below, does not automatically do this, it
-    // only parses the received message.)
-    stream.on('end', callback)
-
     // Persist session in local memory.
     let message
     try {
@@ -125,6 +119,9 @@ ${message.text.split('\n').map(line => `> ${line}`).join('\n')}
     }
 
     console.log('message', message)
+
+    // Acknowledge that we’ve received the message.
+    callback()
 
     forwardEmailWithSessionIdToHumans(message, envelope)
   }
