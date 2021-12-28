@@ -1,5 +1,4 @@
 const crypto = require('crypto')
-const { debugPort } = require('process')
 const sendMail = require('../sendMail')
 
 // Initialise the JSDB database table if if doesn’t already exist.
