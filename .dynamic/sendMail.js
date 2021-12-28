@@ -72,8 +72,10 @@ function _sendMail (to, message) {
 
       transporter.sendMail(message, (error, info) => {
         if (error) {
+          console.error(error)
           reject(error)
         } else {
+          console.info(info)
           resolve(info)
         }
       })
