@@ -6,10 +6,12 @@ const template = fs.readFileSync(path.join(__dirname, '..', 'index-template.html
 module.exports = (request, response) => {
   let page
   if (db.confirmedSignatories.length === 0) {
+    // No signatories yet, display a message asking someone to be the first :)
     page = template.replace("<ul id='signatories'></ul>", "<ul id='signatories'><li>No one yet, why not be the first?</li></ul>")
   } else {
+    // Build signatories list and add it to the page.
     const signatoryListItems = db.confirmedSignatories.reduce((listItems, signatory) => {
-      listItems += `\n<li><a href='${signatory.link}'>${signatory.signatory}</a></li>`
+      return listItems += `\n<li><a href='${signatory.link}'>${signatory.signatory}</a></li>`
     }, '')
 
     const signatoryList = `<ul id='signatories'>${signatoryListItems}</ul>`
