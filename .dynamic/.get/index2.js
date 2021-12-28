@@ -11,7 +11,7 @@ module.exports = (request, response) => {
   } else {
     // Build signatories list and add it to the page.
     const signatoryListItems = db.confirmedSignatories.reduce((listItems, signatory) => {
-      return listItems += `\n<li><a href='${signatory.link}'>${signatory.signatory}</a></li>`
+      return listItems += `\n<li><a href='${signatory.link}' rel='nofollow'>${signatory.signatory}</a></li>`
     }, '')
 
     const signatoryList = `<ul id='signatories'>${signatoryListItems}</ul>`
