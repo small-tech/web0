@@ -106,6 +106,10 @@ footer p {
   font-weight: 500;
 }
 
+.andICantEmphasiseThisEnough {
+  text-decoration: double underline;
+}
+
 #signatories li {
   font-family: 'Reenie Beanie', cursive;
   font-size: 1.5em;
