@@ -119,6 +119,8 @@ ${message.text.split('\n').map(line => `> ${line}`).join('\n')}
       return console.error(error)
     }
 
+    console.log('message', message)
+
     forwardEmailWithSessionIdToHumans(message)
   }
 
