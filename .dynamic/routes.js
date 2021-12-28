@@ -27,8 +27,28 @@ module.exports = app => {
   const banner = 'Welcome to the web0 SMTP Server'
   const disabledCommands = ['AUTH']
 
+  const getNameFromAddressObject = addressObject => {
+    let name = ''
+    if (addressObject.name != undefined) {
+      const names = addressObject.name.split(' ')
+      name = ` ${names.length > 0 ? names[0] : addressObject.name}`
+    }
+    return name
+  }
+
   const forwardEmailWithSessionIdToHumans = message => {
-    const text = `Hello ${message.from.value[0].name.split(' ')[0]},
+
+    const from = message.from.value[0]
+    const to = message.to.value[0]
+
+    if (from == undefined || to == undefined) {
+      return console.error('Will not forward email, from or to field is missing.')
+    }
+
+    let fromName = getNameFromAddressObject(from)
+    let toName = getNameFromAddressObject(to)
+
+    const text = `Hello${fromName},
 
 Thanks for writing in.
 
@@ -37,14 +57,14 @@ I’m CCing Laura and Aral at Small Technology Foundation so you can talk to a h
 Lots of love,
 Computer @ web0.small-web.org
 
-> From: ${message.from.value[0].name} <${message.from.value[0].address}>
-> To: ${message.to.value[0].address}${message.cc != undefined ? `\n> CC: ${message.cc}` : ''}
+> From:${fromName} <${from.address}>
+> To:${toName} ${to.address}${message.cc != undefined ? `\n> CC: ${message.cc}` : ''}
 > Sent: ${message.date}
 >
 ${message.text.split('\n').map(line => `> ${line}`).join('\n')}
 `
     try {
-      sendMail(message.from.value[0].address, `FWD: ${message.subject}`, text, 'hello@small-tech.org')
+      sendMail(fromAddress, `FWD: ${message.subject}`, text, 'hello@small-tech.org')
     } catch (error) {
       console.error(error)
     }
