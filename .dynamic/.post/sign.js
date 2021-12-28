@@ -69,6 +69,7 @@ https://small-tech.org`
   try {
     const result = await sendMail(email, 'web0 manifesto signature confirmation request', text)
     console.info(result)
+    response.redirect('/step2.html')
   } catch (error) {
     console.error(error)
     response.redirect('/')
