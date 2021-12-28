@@ -1,15 +1,12 @@
 const crypto = require('crypto')
 const sendMail = require('../sendMail')
+const redirectToError = require('../redirectToError')
 
 // Initialise the JSDB database table if if doesn’t already exist.
 if (db.pendingSignatories == undefined) {
   db.pendingSignatories = {}
   db.confirmationCodesToSignatoryEmails = {}
   db.confirmedSignatories = []
-}
-
-function redirectToError(response, errorMessage) {
-  response.redirect(`/error?message=${encodeURIComponent(errorMessage)}`)
 }
 
 module.exports = async function (request, response) {

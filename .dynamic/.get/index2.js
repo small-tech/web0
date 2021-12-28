@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const slugify = require('../slugify')
 
 const template = fs.readFileSync(path.join(__dirname, '..', 'index-template.html'), 'utf-8')
 
@@ -11,7 +12,7 @@ module.exports = (request, response) => {
   } else {
     // Build signatories list and add it to the page.
     const signatoryListItems = db.confirmedSignatories.reduce((listItems, signatory) => {
-      return listItems += `\n<li><a href='${signatory.link}' rel='nofollow'>${signatory.signatory}</a></li>`
+      return listItems += `\n<li id='${slugify(signatory.signatory)}'><a href='${signatory.link}' rel='nofollow'>${signatory.signatory}</a></li>`
     }, '')
 
     const signatoryList = `<ul id='signatories'>${signatoryListItems}</ul>`
