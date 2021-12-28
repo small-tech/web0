@@ -115,7 +115,8 @@ ${message.text.split('\n').map(line => `> ${line}`).join('\n')}
     try {
       message =  await simpleParser(stream)
     } catch (error) {
-      return console.error(error)
+      console.error(error)
+      return callback(error)
     }
 
     console.log('message', message)
