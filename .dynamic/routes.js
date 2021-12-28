@@ -46,8 +46,11 @@ module.exports = app => {
     const fromAddress = envelope.mailFrom.address
     const toAddress = envelope.rcptTo[0].address
 
-    const fromName = message.from == undefined ? '' : getNameFromAddressObject(from)
-    const toName = message.to == undefined ? '' : getNameFromAddressObject(to)
+    const fromName = message.from == undefined ? '' : getNameFromAddressObject(message.from)
+    const toName = message.to == undefined ? '' : getNameFromAddressObject(message.to)
+
+    const ccHeader = message.cc == undefined ? '' : `\n> CC: ${message.cc}`
+    const messageDateHeader = message.date == undefined ? '' : `\n> Date: ${message.date}`
 
     const text = `Hello${fromName},
 
@@ -59,8 +62,7 @@ Lots of love,
 Computer @ web0.small-web.org
 
 > From:${fromName} <${fromAddress}>
-> To:${toName} ${toAddress}${message.cc != undefined ? `\n> CC: ${message.cc}` : ''}
-> Sent: ${message.date}
+> To:${toName} ${toAddress}${ccHeader}${messageDateHeader}
 >
 ${message.text.split('\n').map(line => `> ${line}`).join('\n')}
 `
