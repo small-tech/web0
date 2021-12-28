@@ -98,6 +98,10 @@ footer p {
   margin-bottom: 0;
 }
 
+.error {
+  color: red;
+}
+
 .web0 {
   font-family: "Fira Code", monospace;
 }

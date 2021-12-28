@@ -8,6 +8,10 @@ if (db.pendingSignatories == undefined) {
   db.confirmedSignatories = []
 }
 
+function redirectToError(response, errorMessage) {
+  response.redirect(`/error?message=${encodeURIComponent(errorMessage)}`)
+}
+
 module.exports = async function (request, response) {
   const signatory = request.body.signatory
   const link = request.body.link
@@ -15,22 +19,15 @@ module.exports = async function (request, response) {
   const email = request.body.email
 
   // Basic validation on inputs.
-  if (signatory == undefined || link == undefined || name == undefined || email == undefined) {
-    return response.redirect('/')
+  if (signatory === '' || link === '' || name === '' || email === '') {
+    return redirectToError(response, 'All form fields are required.')
   }
 
   // Ensure signatory with given email is not waiting for confirmation.
   if (db.pendingSignatories[email] != undefined) {
-    // TODO: Handle better.
-    console.error(`A request to sign with email ${email} already exists, pending confirmation.`)
-    return response.redirect('/')
-  }
+    return redirectToError(response, `A request to sign the web0 manifesto with that email address (${email}) already exists, pending confirmation.
 
-  // Ensure confirmed signatory with given email does not exist.
-  if (db.confirmedSignatories[email] != undefined) {
-    // TODO: Handle better.
-    console.error(`Person/organisation with ${email} is already a signatory.`)
-    return response.redirect('/')
+    <p>Please follow the link in the email we sent you to finalise your submission.</p>`)
   }
 
   // Create the signatory object and persist it in the database.
@@ -68,9 +65,8 @@ https://small-tech.org`
   try {
     const result = await sendMail(email, 'web0 manifesto signature confirmation request', text)
     console.info(result)
-    response.redirect('/step2.html')
+    return response.redirect('/step2.html')
   } catch (error) {
-    console.error(error)
-    response.redirect('/')
+    return redirectToError(response, error)
   }
 }
