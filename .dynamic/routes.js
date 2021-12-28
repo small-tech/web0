@@ -36,15 +36,15 @@ module.exports = app => {
     return name
   }
 
-  const forwardEmailWithSessionIdToHumans = (message, session) => {
+  const forwardEmailWithSessionIdToHumans = (message, envelope) => {
 
     // Sanity check. Ensure the mail envelope is correct before continuing.
-    if (session.envelope == undefined || session.envelope.mailFrom == undefined || session.envelope.rcptTo == undefined || session.envelope.rcptTo.length === 0) {
-      return console.error('Cannot forward email. Message envelope is wrong.', session)
+    if (envelope == undefined || envelope.mailFrom == undefined || envelope.rcptTo == undefined || envelope.rcptTo.length === 0) {
+      return console.error('Cannot forward email. Message envelope is wrong.', envelope)
     }
 
-    const fromAddress = session.envelope.mailFrom.address
-    const toAddress = session.envelope.rcptTo[0].address
+    const fromAddress = envelope.mailFrom.address
+    const toAddress = envelope.rcptTo[0].address
 
     const fromName = message.from == undefined ? '' : getNameFromAddressObject(from)
     const toName = message.to == undefined ? '' : getNameFromAddressObject(to)
@@ -104,7 +104,9 @@ ${message.text.split('\n').map(line => `> ${line}`).join('\n')}
 
     console.log('onData: session =', session)
 
-    const sessionId = session.id
+    // Save the envelope here because it will have changed by the
+    // time we get past the async await of the parser.
+    const envelope = session.envelope
 
     // Add a handler for the stream end event so that we can acknowledge
     // the email has been received so servers do not keep retrying.
@@ -122,7 +124,7 @@ ${message.text.split('\n').map(line => `> ${line}`).join('\n')}
 
     console.log('message', message)
 
-    forwardEmailWithSessionIdToHumans(message, session)
+    forwardEmailWithSessionIdToHumans(message, envelope)
   }
 
   const onClose = session => {
