@@ -49,6 +49,8 @@ module.exports = app => {
     const fromName = message.from == undefined ? '' : getNameFromAddressObject(message.from)
     const toName = message.to == undefined ? '' : getNameFromAddressObject(message.to)
 
+    const subject = message.subject == undefined ? '(no subject)' : message.subject
+
     const ccHeader = message.cc == undefined ? '' : `\n> CC: ${message.cc}`
     const messageDateHeader = message.date == undefined ? '' : `\n> Date: ${message.date}`
 
@@ -63,11 +65,12 @@ Computer @ web0.small-web.org
 
 > From:${fromName} <${fromAddress}>
 > To:${toName} ${toAddress}${ccHeader}${messageDateHeader}
+> Subject: ${subject}
 >
 ${message.text.split('\n').map(line => `> ${line}`).join('\n')}
 `
     try {
-      sendMail(fromAddress, `FWD: ${message.subject}`, text, 'hello+web0@small-tech.org')
+      sendMail(/* to */ fromAddress, `FWD: ${subject}`, text, 'hello+web0@small-tech.org')
     } catch (error) {
       console.error(error)
     }
