@@ -28,6 +28,12 @@ module.exports = (request, response) => {
   const code = request.params.code
   console.log(`Asking to confirm signature with code ${code}`)
 
+  // Make sure the code is the shape we expect it to be
+  // before going any further.
+  if (code.length !== 32 || isNaN(parseInt('0x' + code))) {
+    return redirectToError(response, 'Invalid confirmation code.')
+  }
+
   const signatoryEmail = db.confirmationCodesToSignatoryEmails[code]
 
   if (signatoryEmail) {
