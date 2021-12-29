@@ -15,7 +15,6 @@ h2 {
   font-size: 2rem;
 }
 
-
 body {
   max-width: 720px;
   margin-left: auto;
@@ -85,6 +84,7 @@ ol {
   padding: 1em;
   font-family: 'Annie Use Your Telescope', cursive;
   font-size: 1.25em;
+  margin-top: -0.25em;
 }
 
 ol li {
