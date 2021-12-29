@@ -125,6 +125,16 @@ footer p {
   text-decoration: double underline;
 }
 
+#progress {
+  transition: opacity 1s;
+  opacity: 100;
+}
+
+#confirmationEmailResult {
+  transition: opacity 1s;
+  opacity: 0;
+}
+
 #signatories li {
   font-family: 'Reenie Beanie', cursive;
   font-size: 1.5em;

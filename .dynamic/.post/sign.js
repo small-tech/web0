@@ -21,20 +21,32 @@ const headerTemplate = `
       </section>
 `
 
+const fadeOutProgressMessageTemplate = `
+  <style>#progress { opacity: 0; }</style>
+`
+
 const hideProgressMessageTemplate = `
   <style>#progress { display: none; }</style>
 `
 
+const fadeInConfirmationEmailResultTemplate = `
+  <style>#confirmationEmailResult { opacity: 1; }</style>
+`
+
 const successTemplate = `
-      <h2>Email sent!</h2>
-      <p>Please check your inbox and follow the link there to finish signing the <span class='web0'>web0</span> manifesto.</p>
-      <p>Thanks!</p>
+      <section id='confirmationEmailResult'>
+        <h2>Email sent!</h2>
+        <p>Please check your inbox and follow the link there to finish signing the <span class='web0'>web0</span> manifesto.</p>
+        <p>Thanks!</p>
+      </section>
 `
 
 const failureTemplate = `
-      <h2 class='error'>Sorry, could you not email you.</h2>
-      <p>The error details are below:</p>
-      <pre><code>{{error}}</code></pre>
+      <section id='confirmationEmailResult'>
+        <h2 class='error'>Sorry, could you not email you.</h2>
+        <p>The error details are below:</p>
+        <pre><code>{{error}}</code></pre>
+      </section>
 `
 
 const footerTemplate = `
@@ -51,6 +63,13 @@ const footerTemplate = `
 // Via https://www.abstractapi.com/tools/email-regex-guide
 const validEmailRegExp = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 
+function delay (timeInMs) {
+  return new Promise ((resolve, reject) => {
+    setTimeout(() => {
+      resolve()
+    }, timeInMs)
+  })
+}
 
 // Initialise the JSDB database table if if doesn’t already exist.
 if (db.pendingSignatories == undefined) {
@@ -121,12 +140,23 @@ https://small-tech.org`
 
   try {
     const result = await sendMail(email, 'web0 manifesto signature confirmation request', text)
+    // Start fading out the progress message and wait for it complete
+    // before removing it from the DOM and fading in the result message.
+    // Yes, we’re animating using the HTTP stream and CSS animations
+    // without any client-side JavaScript ;)
+    response.write(fadeOutProgressMessageTemplate)
+    await delay(1000)
     response.write(hideProgressMessageTemplate)
     response.write(successTemplate)
   } catch (error) {
+    // Start fading out the progress message and wait for it complete
+    // before removing it from the DOM and fading in the error message.
+    response.write(fadeOutProgressMessageTemplate)
+    await delay(1000)
     response.write(hideProgressMessageTemplate)
     response.write(failureTemplate.replace('{{error}}', error))
   }
+  response.write(fadeInConfirmationEmailResultTemplate)
   response.write(footerTemplate)
   response.end()
 }
