@@ -3,6 +3,19 @@ html {
   font-size: 24px;
 }
 
+h1 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-size: 3rem;
+}
+
+h2 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+}
+
+
 body {
   max-width: 720px;
   margin-left: auto;
@@ -17,6 +30,7 @@ form {
   padding-right: 3em;
   transform: rotate(-1.5deg);
   font-size: 0.75em;
+  box-shadow: .45em .5em 0 #666;
 }
 
 form h2 {
