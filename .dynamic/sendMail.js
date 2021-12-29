@@ -43,6 +43,7 @@ module.exports = function sendMail (to, subject, text, cc = null) {
       await _sendMail(cc, message)
     }
     await _sendMail(to, message)
+    resolve()
   })
 }
 
@@ -72,10 +73,10 @@ function _sendMail (to, message) {
 
       transporter.sendMail(message, (error, info) => {
         if (error) {
-          console.error(error)
+          console.error('Send email FAILED', error)
           reject(error)
         } else {
-          console.info(info)
+          console.info('Send email OK', info)
           resolve(info)
         }
       })
