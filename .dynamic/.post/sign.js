@@ -116,7 +116,7 @@ module.exports = async function (request, response) {
 
   // OK, let’s re-form the URL to keep only the protocol, hostname, pathname, and hash (if any).
   // In other words, a URL here really doesn’t need port, parameters, etc.
-  link = `${url.protocol}${url.hostname}${url.pathname}${url.hash}`
+  link = `${url.protocol}//${url.hostname}${url.pathname}${url.hash}`
 
   // Now, finally, let’s make sure this URL is reachable.
   const linkIsReachable = await urlExists(link)
