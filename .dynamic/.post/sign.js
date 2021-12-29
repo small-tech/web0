@@ -1,4 +1,5 @@
 const crypto = require('crypto')
+const urlRegexSafe = require('url-regex-safe')
 const sendMail = require('../sendMail')
 const redirectToError = require('../redirectToError')
 
@@ -80,9 +81,9 @@ if (db.pendingSignatories == undefined) {
 
 module.exports = async function (request, response) {
   const signatory = request.body.signatory
-  const link = request.body.link
   const name = request.body.name
   const email = request.body.email
+  let link = request.body.link
 
   // Basic validation on inputs.
   if (signatory === '' || link === '' || name === '' || email === '') {
@@ -92,6 +93,19 @@ module.exports = async function (request, response) {
   // Basic email validation.
   if (validEmailRegExp.exec(email) === null) {
     return redirectToError(response, 'Sorry, that does not look like a valid email address.')
+  }
+
+  // Basic URL massaging (we only accept https because it’s three days to 2022 for goodness’ sake)
+  // and validation. Also, an incorrect link is not a show stopper, we just strip it from the listing.
+  link = link.startsWith('http://') ? link.replace('http://', 'https://') : link
+  link = link.startsWith('https://') ? link : `https://${link}`
+
+  const linkIsValidUrl = urlRegexSafe({exact: true}).test(link)
+
+  link = linkIsValidUrl ? link : null
+
+  if (!linkIsValidUrl) {
+    console.warn(`   💀    ❨web0❩ Warning: bad signatory link`, link)
   }
 
   // Ensure signatory with given email is not waiting for confirmation.
