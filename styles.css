@@ -29,7 +29,7 @@ form ul li {
   margin-bottom: 1em;
 }
 
-input[type="text"] {
+input[type="text"], input[type="email"], input[type="url"] {
   margin-top: 0.25em;
   padding: 1em;
   border: 0;
