@@ -95,17 +95,15 @@ module.exports = async function (request, response) {
     return redirectToError(response, 'Sorry, that does not look like a valid email address.')
   }
 
-  // Basic URL massaging (we only accept https because it’s three days to 2022 for goodness’ sake)
-  // and validation. Also, an incorrect link is not a show stopper, we just strip it from the listing.
+  // Basic URL massaging (we only accept https because it’s three days to 2022
+  // for goodness’ sake) and validation.
   link = link.startsWith('http://') ? link.replace('http://', 'https://') : link
   link = link.startsWith('https://') ? link : `https://${link}`
 
   const linkIsValidUrl = urlRegexSafe({exact: true}).test(link)
 
-  link = linkIsValidUrl ? link : null
-
   if (!linkIsValidUrl) {
-    console.warn(`   💀    ❨web0❩ Warning: bad signatory link`, link)
+    return redirectToError(response, 'Sorry, that does not look a valid web address.')
   }
 
   // Ensure signatory with given email is not waiting for confirmation.
