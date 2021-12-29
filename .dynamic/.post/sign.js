@@ -156,6 +156,7 @@ https://small-tech.org`
     response.write(hideProgressMessageTemplate)
     response.write(failureTemplate.replace('{{error}}', error))
   }
+  await delay(100)
   response.write(fadeInConfirmationEmailResultTemplate)
   response.write(footerTemplate)
   response.end()
