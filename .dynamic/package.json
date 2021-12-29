@@ -13,6 +13,6 @@
     "nodemailer": "^6.7.2",
     "slugify": "^1.6.4",
     "smtp-server": "^3.9.0",
-    "url-regex-safe": "^2.1.0"
+    "url-exist": "^2.0.2"
   }
 }

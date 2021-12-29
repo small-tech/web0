@@ -1,7 +1,7 @@
 const crypto = require('crypto')
-const urlRegexSafe = require('url-regex-safe')
 const sendMail = require('../sendMail')
 const redirectToError = require('../redirectToError')
+const urlExists = require('url-exist')
 
 const headerTemplate = `
   <!DOCTYPE html>
@@ -95,22 +95,34 @@ module.exports = async function (request, response) {
     return redirectToError(response, 'Sorry, that does not look like a valid email address.')
   }
 
-  // Basic URL massaging (we only accept https because it’s three days to 2022
-  // for goodness’ sake) and validation.
-  link = link.startsWith('http://') ? link.replace('http://', 'https://') : link
-  link = link.startsWith('https://') ? link : `https://${link}`
-
-  const linkIsValidUrl = urlRegexSafe({exact: true}).test(link)
-
-  if (!linkIsValidUrl) {
-    return redirectToError(response, 'Sorry, that does not look a valid web address.')
-  }
-
   // Ensure signatory with given email is not waiting for confirmation.
   if (db.pendingSignatories[email] != undefined) {
     return redirectToError(response, `A request to sign the web0 manifesto with that email address (${email}) already exists, pending confirmation.
 
     <p>Please follow the link in the email we sent you to finalise your submission.</p>`)
+  }
+
+  // Basic URL massaging (we only accept https because it’s three days to 2022
+  // for goodness’ sake), validation, and sanitisation.
+  link = link.startsWith('http://') ? link.replace('http://', 'https://') : link
+  link = link.startsWith('https://') ? link : `https://${link}`
+
+  let url
+  try {
+    url = new URL(link)
+  } catch (error) {
+    return redirectToError(response, `Sorry, the link you provided (${link}) isn’t a valid URL.`)
+  }
+
+  // OK, let’s re-form the URL to keep only the protocol, hostname, pathname, and hash (if any).
+  // In other words, a URL here really doesn’t need port, parameters, etc.
+  link = `${url.protocol}${url.hostname}${url.pathname}${url.hash}`
+
+  // Now, finally, let’s make sure this URL is reachable.
+  const linkIsReachable = await urlExists(link)
+
+  if (!linkIsReachable) {
+    return redirectToError(response, `Sorry, our sanitised version of the link you provided (${link}) isn’t loading for us.`)
   }
 
   // Start streaming the response so the person sees progress as we
