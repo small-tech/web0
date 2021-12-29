@@ -2,6 +2,44 @@ const crypto = require('crypto')
 const sendMail = require('../sendMail')
 const redirectToError = require('../redirectToError')
 
+const headerTemplate = `
+  <!DOCTYPE html>
+  <html lang='en'>
+  <head>
+    <meta charset='UTF-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=<device-width>, initial-scale=1.0'>
+    <title>web0 manifesto: Please wait, sending you a confirmation email…</title>
+    <link rel='stylesheet' href='/styles.css'>
+  </head>
+  <body>
+    <section id='manifesto'>
+      <h1><span class='web0'>web0</span> manifesto</h1>
+      <p>Please wait, sending you a message at {{email_address}} to confirm your email address…</p>
+`
+
+const successTemplate = `
+      <p><strong>Email sent!</strong></p>
+      <p>Please check your inbox and follow the link there to finish signing the <span class='web0'>web0</span> manifesto.</p>
+      <p>Thanks!</p>
+`
+
+const failureTemplate = `
+      <p class='error'>Sorry, could you not email you.</p>
+      <p>The error details are below:</p>
+      <pre><code>{{error}}</code></pre>
+`
+
+const footerTemplate = `
+      <p><a href='/'>Back.</a></p>
+    </section>
+    <footer>
+      <p>Made with ♥ by <a href='https://small-tech.org'>Small Technology Foundation</a></p> <p><strong>Like this? <a href='https://small-tech.org/fund-us'>Fund us!</a></strong></p>
+    </footer>
+  </body>
+  </html>
+`
+
 // Initialise the JSDB database table if if doesn’t already exist.
 if (db.pendingSignatories == undefined) {
   db.pendingSignatories = {}
@@ -26,6 +64,11 @@ module.exports = async function (request, response) {
 
     <p>Please follow the link in the email we sent you to finalise your submission.</p>`)
   }
+
+  // Start streaming the response so the person sees progress as we
+  // attempt to send them the confirmation email.
+  response.type('html')
+  response.write(headerTemplate.replace('{{email_address}}', email))
 
   // Create the signatory object and persist it in the database.
   db.pendingSignatories[email] = {
@@ -62,8 +105,11 @@ https://small-tech.org`
   try {
     const result = await sendMail(email, 'web0 manifesto signature confirmation request', text)
     console.info('[[[[ CONFIRMATION EMAIL SENT OK ]]]]', result)
-    response.redirect('/step2.html')
+    response.write(successTemplate)
+
   } catch (error) {
-    redirectToError(response, error)
+    response.write(failureTemplate.replace('{{error}}', error))
   }
+  response.write(footerTemplate)
+  response.end()
 }

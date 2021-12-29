@@ -1,4 +1,4 @@
-const errorTemplate = `<!DOCTYPE html>
+const template = `<!DOCTYPE html>
 <html lang='en'>
 <head>
   <meta charset='UTF-8'>
@@ -29,5 +29,5 @@ module.exports = (request, response) => {
     .replace(/&lt;p&gt;/g, "<p>")    // OK, ok, paragraph tags are allowed…
     .replace(/&lt;\/p&gt;/g, "</p>") // Happy now?
 
-    response.html(errorTemplate.replace('{{error_message}}', errorMessage))
+    response.html(template.replace('{{error_message}}', errorMessage))
 }
