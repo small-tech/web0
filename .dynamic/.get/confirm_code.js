@@ -21,8 +21,8 @@ const template = `<!DOCTYPE html>
 </html>
 `
 
-const slugify = require('../slugify')
 const redirectToError = require('../redirectToError')
+const slugify = str => require('slugify')(str, {lower: true, strict: true})
 
 module.exports = (request, response) => {
   const code = request.params.code

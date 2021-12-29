@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const slugify = require('../slugify')
+const slugify = str => require('slugify')(str, {lower: true, strict: true})
 
 const template = fs.readFileSync(path.join(__dirname, '..', 'index-template.html'), 'utf-8')
 
