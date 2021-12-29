@@ -19,13 +19,13 @@ const headerTemplate = `
 `
 
 const successTemplate = `
-      <p><strong>Email sent!</strong></p>
+      <h2>Email sent!</h2>
       <p>Please check your inbox and follow the link there to finish signing the <span class='web0'>web0</span> manifesto.</p>
       <p>Thanks!</p>
 `
 
 const failureTemplate = `
-      <p class='error'>Sorry, could you not email you.</p>
+      <h2 class='error'>Sorry, could you not email you.</h2>
       <p>The error details are below:</p>
       <pre><code>{{error}}</code></pre>
 `
@@ -39,6 +39,11 @@ const footerTemplate = `
   </body>
   </html>
 `
+
+// This is the loose regular expression used in the HTML5 standard.
+// Via https://www.abstractapi.com/tools/email-regex-guide
+const validEmailRegExp = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+
 
 // Initialise the JSDB database table if if doesn’t already exist.
 if (db.pendingSignatories == undefined) {
@@ -56,6 +61,11 @@ module.exports = async function (request, response) {
   // Basic validation on inputs.
   if (signatory === '' || link === '' || name === '' || email === '') {
     return redirectToError(response, 'All form fields are required.')
+  }
+
+  // Basic email validation.
+  if (validEmailRegExp.exec(email) === null) {
+    return redirectToError(response, 'Sorry, that does not look like a valid email address.')
   }
 
   // Ensure signatory with given email is not waiting for confirmation.
@@ -85,7 +95,7 @@ module.exports = async function (request, response) {
 
   const text = `Hello ${name.split(' ')[0]},
 
-You (or someone who gave us your email address) has asked to sign the web0 manifesto (https://web0.small-web.org) on behalf of ${signatory}.
+You (or someone who gave us your email address) has asked to sign the web0 manifesto on behalf of ${signatory}.
 
 If this is not you, please ignore this email.
 
@@ -104,9 +114,7 @@ https://small-tech.org`
 
   try {
     const result = await sendMail(email, 'web0 manifesto signature confirmation request', text)
-    console.info('[[[[ CONFIRMATION EMAIL SENT OK ]]]]', result)
     response.write(successTemplate)
-
   } catch (error) {
     response.write(failureTemplate.replace('{{error}}', error))
   }
