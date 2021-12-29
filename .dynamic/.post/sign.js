@@ -15,7 +15,14 @@ const headerTemplate = `
   <body>
     <section id='manifesto'>
       <h1><span class='web0'>web0</span> manifesto</h1>
-      <p>Please wait, sending you a message at {{email_address}} to confirm your email address…</p>
+      <section id='progress'>
+        <h2><img class='spinner' src='/spinner.svg'>Please wait…</h2>
+        <p>We’re sending you a message at {{email_address}} to confirm your email address.</p>
+      </section>
+`
+
+const hideProgressMessageTemplate = `
+  <style>#progress { display: none; }</style>
 `
 
 const successTemplate = `
@@ -114,8 +121,10 @@ https://small-tech.org`
 
   try {
     const result = await sendMail(email, 'web0 manifesto signature confirmation request', text)
+    response.write(hideProgressMessageTemplate)
     response.write(successTemplate)
   } catch (error) {
+    response.write(hideProgressMessageTemplate)
     response.write(failureTemplate.replace('{{error}}', error))
   }
   response.write(footerTemplate)

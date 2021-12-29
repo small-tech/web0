@@ -98,6 +98,13 @@ footer p {
   margin-bottom: 0;
 }
 
+.spinner {
+  width: 0.75em;
+  height: 0.75em;
+  margin-right: 0.33em;
+  vertical-align: baseline;
+}
+
 .error {
   color: red;
 }
