@@ -11,7 +11,7 @@ const template = `<!DOCTYPE html>
   <section id='manifesto'>
     <h1><span class='web0'>web0</span> manifesto</h1>
     <h2>Thank you!</h2>
-    <p>Your signature has now been added to the web0 manifesto.</p>
+    <p>Your signature has now been added to the <span class='web0'>web0</span> manifesto.</p>
     <p><a href='/#{{signature_id}}'>View your signature.</a></p>
   </section>
   <footer>
