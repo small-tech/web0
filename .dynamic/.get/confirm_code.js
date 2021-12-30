@@ -39,17 +39,24 @@ module.exports = (request, response) => {
   if (signatoryEmail) {
     const signatory = db.pendingSignatories[signatoryEmail]
 
-    // Move the signatory from the pending list to the confirmed list and
-    // redirect to the index.
-    db.confirmedSignatories.push(signatory)
+    if (signatory) {
+      // Move the signatory from the pending list to the confirmed list and
+      // redirect to the index.
+      db.confirmedSignatories.push(signatory)
 
-    // Clean up.
-    delete db.pendingSignatories[signatoryEmail]
-    delete db.confirmationCodesToSignatoryEmails[code]
+      // Clean up.
+      delete db.pendingSignatories[signatoryEmail]
 
-    // Thank the person for signing.
-    const page = template.replace('{{signature_id}}', slugify(signatory.signatory))
-    return response.html(page)
+      // Note: we do NOT delete the entry in db.confirmationCodesToSignatoryEmails
+      // as we will use it again if the person ever wants to delete their signature
+      // in the future.
+
+      // Thank the person for signing.
+      const page = template.replace('{{signature_id}}', slugify(signatory.signatory))
+      return response.html(page)
+    } else {
+      redirectToError(response, 'Signatory already confirmed.')
+    }
   } else {
     return redirectToError(response, 'Signatory not found.')
   }
