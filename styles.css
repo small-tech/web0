@@ -153,8 +153,9 @@ footer p {
 #signatories li {
   font-family: 'Reenie Beanie', cursive;
   font-size: 1.5em;
+  line-height: 1;
   list-style-type: " ✒️ ";
-  margin-bottom: 0.25em;
+  margin-bottom: 0.5em;
 }
 
 #manifesto {
