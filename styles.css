@@ -133,11 +133,11 @@ footer p {
 }
 
 .toWit {
-  /* font-weight: bold; */
+  font-style: italic;
 }
 
 .andICantEmphasiseThisEnough {
-  text-decoration: double underline;
+  background-color: yellow;
 }
 
 #progress {
