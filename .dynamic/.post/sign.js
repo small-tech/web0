@@ -145,13 +145,20 @@ module.exports = async function (request, response) {
 
   const text = `Hello ${name.split(' ')[0]},
 
-You (or someone who gave us your email address) has asked to sign the web0 manifesto on behalf of ${signatory}.
+You (or someone who gave us your email address) has asked to sign the web0 manifesto on behalf of:
 
-If this is not you, please ignore this email.
+  - Signatory: ${signatory}
+  - Link: ${link}
 
-If this is you and you want to confirm your signature, please follow the link below:
+If this wasn’t you, please ignore this email.
 
-https://web0.small-web.org/confirm/${confirmationCode}
+If this was you and the details presented above are correct, please use the following link to confirm your signature:
+
+Confirm: https://web0.small-web.org/confirm/${confirmationCode}
+
+If your details are not correct and you want to resubmit you request, please first cancel this pending request using the link below:
+
+Cancel: https://web0.small-web.org/cancel/${confirmationCode}
 
 Thank you.
 
