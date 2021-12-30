@@ -77,26 +77,6 @@ a {
   color: darkslateblue;
 }
 
-ol {
-  list-style-type: none;
-  background: black;
-  color: white;
-  border-radius: 0.25em;
-  padding: 1em;
-  font-family: 'Annie Use Your Telescope', cursive;
-  font-size: 1.25em;
-  margin-top: -0.25em;
-}
-
-ol li {
-  line-height: 1em;
-  margin-bottom: 0.5em;
-}
-
-ol li:last-of-type {
-  margin-bottom: 0;
-}
-
 strong {
   font-weight: 800;
 }
@@ -110,6 +90,26 @@ footer {
 
 footer p {
   margin-top: 0;
+  margin-bottom: 0;
+}
+
+.blackboard {
+  list-style-type: none;
+  background: black;
+  color: white;
+  border-radius: 0.25em;
+  padding: 1em;
+  font-family: 'Annie Use Your Telescope', cursive;
+  font-size: 1.25em;
+  margin-top: -0.25em;
+}
+
+.blackboard li {
+  line-height: 1em;
+  margin-bottom: 0.5em;
+}
+
+.blackboard li:last-of-type {
   margin-bottom: 0;
 }
 
@@ -154,6 +154,7 @@ footer p {
   font-family: 'Reenie Beanie', cursive;
   font-size: 1.5em;
   list-style-type: " ✒️ ";
+  margin-bottom: 0.25em;
 }
 
 #manifesto {
