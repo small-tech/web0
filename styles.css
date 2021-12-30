@@ -164,6 +164,16 @@ footer p {
   margin-bottom: 2.5em;
 }
 
+@media only screen and (max-width: 640px) {
+  /* Reduce form padding on narrower viewports to maximise usable space */
+  form {
+    padding-right: 1em;
+  }
+  form ul {
+    padding-left: 0;
+  }
+}
+
 /* Web fonts */
 
 /* Fira Code subset, we only use the following glyphs: web0 */
