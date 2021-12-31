@@ -36,7 +36,7 @@ module.exports = (request, response) => {
   const signatoryEmail = db.confirmationCodesToSignatoryEmails[code]
 
   if (signatoryEmail) {
-    const signatoryIndex = -1
+    let signatoryIndex = -1
     const signatory = db.confirmedSignatories.find((signatory, index) => {
       if (signatory.email === signatoryEmail) {
         signatoryIndex = index
