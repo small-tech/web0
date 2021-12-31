@@ -130,18 +130,20 @@ module.exports = async function (request, response) {
   response.type('html')
   response.write(headerTemplate.replace('{{email_address}}', email))
 
+  // Create a random hash for the validation URL
+  // and map that to the pending signatory.
+  const confirmationCode = crypto.randomBytes(16).toString('hex')
+  db.confirmationCodesToSignatoryEmails[confirmationCode] = email
+
   // Create the signatory object and persist it in the database.
   db.pendingSignatories[email] = {
+    id: confirmationCode,
     signatory,
     email,
     name,
     link
   }
 
-  // Create a random hash for the validation URL
-  // and map that to the pending signatory.
-  const confirmationCode = crypto.randomBytes(16).toString('hex')
-  db.confirmationCodesToSignatoryEmails[confirmationCode] = email
 
   const text = `Hello ${name.split(' ')[0]},
 

@@ -47,10 +47,7 @@ module.exports = async (request, response) => {
 
       // Clean up.
       delete db.pendingSignatories[signatoryEmail]
-
-      // Note: we do NOT delete the entry in db.confirmationCodesToSignatoryEmails
-      // as we will use it again if the person ever wants to delete their signature
-      // in the future.
+      delete db.confirmationCodesToSignatoryEmails[code]
 
       // Thank the person for signing.
       const page = template.replace('{{signature_id}}', slugify(signatory.signatory))

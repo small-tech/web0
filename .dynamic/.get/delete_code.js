@@ -33,33 +33,27 @@ module.exports = (request, response) => {
     return redirectToError(response, 'Invalid confirmation code.')
   }
 
-  const signatoryEmail = db.confirmationCodesToSignatoryEmails[code]
-
-  if (signatoryEmail) {
-    let signatoryIndex = -1
-    const signatory = db.confirmedSignatories.find((signatory, index) => {
-      if (signatory.email === signatoryEmail) {
-        signatoryIndex = index
-        return true
-      } else {
-        return false
-      }
-    })
-
-    if (signatory) {
-      // Delete the signatory request.
-      delete db.confirmedSignatories[signatoryIndex]
-
-      // Also delete the code to email map as it is no longer necessary.
-      delete db.confirmationCodesToSignatoryEmails[code]
-
-      // Inform the person that their signature has been deleted.
-      const page = template.replace('{{signatory}}', slugify(signatory.signatory))
-      return response.html(page)
+  let signatoryIndex = -1
+  const signatory = db.confirmedSignatories.find((signatory, index) => {
+    if (signatory.id === code) {
+      signatoryIndex = index
+      return true
     } else {
-      redirectToError(response, 'Signatory not found.')
+      return false
     }
+  })
+
+  if (signatory) {
+    // Delete the signatory request.
+    delete db.confirmedSignatories[signatoryIndex]
+
+    // Also delete the code to email map as it is no longer necessary.
+    delete db.confirmationCodesToSignatoryEmails[code]
+
+    // Inform the person that their signature has been deleted.
+    const page = template.replace('{{signatory}}', slugify(signatory.signatory))
+    return response.html(page)
   } else {
-    return redirectToError(response, 'Signatory not found.')
+    redirectToError(response, 'Signatory not found.')
   }
 }
