@@ -34,6 +34,8 @@ body {
   padding-right: 1em;
 }
 
+/* Signature submission form. */
+
 form {
   background-color: lightgrey;
   padding: 1em;
@@ -66,7 +68,6 @@ label small {
 
 
 input[type="text"], input[type="email"], input[type="url"] {
-  /* margin-top: 0.25em; */
   padding: 1em;
   border: 0;
   font-size: 1em;
@@ -83,10 +84,8 @@ input[type="submit"] {
   background-color: #eee;
 }
 
-/* Clear the validation rule on the submit button because – thanks to the CSS gods – it does not take part in browser validation. Not like it could have taken on an invalid state when any items in the form were invalid or anything… *smh* :) */
-
+/* We have a different validation animation on the submit button. */
 input[type="submit"] {
-  box-shadow: none;
   transition: color, background-color 0.33s;
 }
 
@@ -112,8 +111,8 @@ input:valid + .checkmark {
   width: 1.5em;
 }
 
-/* However, just because the browser gods didn’t enable validation for the submit button doesn’t mean we can’t using CSS alone ;) */
-
+/* The submit button does not partake in browser form validation logic but we
+   can still alter its appearance when the form itself is fully valid. */
 form:valid input[type="submit"] {
   background-color: rgb(31, 145, 31);
   color: #eee;
@@ -151,8 +150,17 @@ footer {
 }
 
 footer p {
-  margin-top: 0;
+  margin-top: 1em;
   margin-bottom: 0;
+}
+
+footer p:first-of-type {
+  margin-top: 0;
+}
+
+.trivia {
+  font-style: italic;
+  font-size: 0.8em;
 }
 
 .blackboard {
