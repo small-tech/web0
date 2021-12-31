@@ -36,7 +36,7 @@ module.exports = (request, response) => {
   const signatoryEmail = db.confirmationCodesToSignatoryEmails[code]
 
   if (signatoryEmail) {
-    const signatory = db.confirmedSignatories[signatoryEmail]
+    const signatory = db.confirmedSignatories.find(signatory => signatory.email === signatoryEmail)
 
     if (signatory) {
       // Delete the signatory request.
