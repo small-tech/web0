@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 html {
   font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 24px;
@@ -49,12 +53,25 @@ form ul li {
   margin-bottom: 1em;
 }
 
+label {
+  font-weight: 500;
+  margin-bottom: 0.25em;
+}
+
+label small {
+  display: block;
+  font-style: italic;
+  font-weight: normal;
+}
+
+
 input[type="text"], input[type="email"], input[type="url"] {
-  margin-top: 0.25em;
+  /* margin-top: 0.25em; */
   padding: 1em;
   border: 0;
-  box-shadow: inset 0 0 10px #fff;
   font-size: 1em;
+  padding-right: 3em;
+  box-shadow: inset 0 0 10px #fff;
 }
 
 input[type="submit"] {
@@ -62,39 +79,60 @@ input[type="submit"] {
   padding: 1em;
   border-radius: 0.5em;
   font-size: 1em;
-  color: #333;
-}
-
-input[type="submit"]:hover {
-  background-color: #666;
-  color: #eee;
-}
-
-input:not(:invalid) {
-  transition: box-shadow 1s;
-  box-shadow: inset 0 0 0 4px rgb(31, 145, 31);
+  color: #999;
+  background-color: #eee;
 }
 
 /* Clear the validation rule on the submit button because – thanks to the CSS gods – it does not take part in browser validation. Not like it could have taken on an invalid state when any items in the form were invalid or anything… *smh* :) */
 
-input[type="submit"]:not(:invalid) {
+input[type="submit"] {
   box-shadow: none;
+  transition: color, background-color 0.33s;
+}
+
+.inputWithCheckmark {
+  position: relative;
+  margin-top: 0;
+}
+
+.checkmark {
+  position: absolute;
+  text-align: right;
+  top: calc(50% - 0.75em);
+  right: 0.5em;
+  opacity: 0;
+  transition: opacity 0.33s;
+}
+
+input:valid + .checkmark {
+  opacity: 1;
+}
+
+.checkmark img {
+  width: 1.5em;
 }
 
 /* However, just because the browser gods didn’t enable validation for the submit button doesn’t mean we can’t using CSS alone ;) */
 
-form:not(:invalid) input[type="submit"] {
-  box-shadow: inset 0 0 0 4px rgb(31, 145, 31);
+form:valid input[type="submit"] {
+  background-color: rgb(31, 145, 31);
+  color: #eee;
 }
 
-label {
-  font-weight: 500;
+form:invalid input[type="submit"]:hover {
+  color: #999;
+  background-color: #eee;
+  cursor: not-allowed;
 }
 
-label small {
-  display: block;
-  font-style: italic;
-  font-weight: normal;
+form:valid input[type="submit"]:hover, form:valid input[type="submit"]:focus {
+  background-color: rgb(35, 170, 35);;
+  color: #fff;
+  cursor: pointer;
+}
+
+input {
+  width: 100%;
 }
 
 a {
