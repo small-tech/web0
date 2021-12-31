@@ -61,7 +61,7 @@ module.exports = async (request, response) => {
       // delete their data from our database.)
       const text = `Hello ${signatory.name.split(' ')[0]},
 
-Thank you for signing the web0 manifesto on behalf of ${signatory} (${link}).
+Thank you for signing the web0 manifesto on behalf of ${signatory.signatory} (${signatory.link}).
 
 View your signature at:
 
