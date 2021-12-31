@@ -67,7 +67,7 @@ View your signature at:
 
 https://web0.small-web.org/#${slugify(signatory.signatory)}
 
-If you ever want to remove your signature from the manifesto in the future, please use the link below (this will remove all of your data including your name and email address from the web0 site’s database):
+If you ever want to remove your signature and related data that’s not display (your name and email address) from the manifesto in the future, please use the link below:
 
 https://web0.small-web.org/delete/${code}
 
