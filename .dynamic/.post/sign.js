@@ -147,18 +147,17 @@ module.exports = async function (request, response) {
 
 You (or someone who gave us your email address) has asked to sign the web0 manifesto on behalf of:
 
-  - Signatory: ${signatory}
-  - Link: ${link}
+${signatory} (${link})
 
 If this wasn’t you, please ignore this email.
 
-If this was you and the details presented above are correct, please use the following link to confirm your signature:
+Please use the following link to confirm your signature:
 
-Confirm: https://web0.small-web.org/confirm/${confirmationCode}
+https://web0.small-web.org/confirm/${confirmationCode}
 
-If your details are not correct and you want to resubmit you request, please first cancel this pending request using the link below:
+You can also cancel your request using the link below:
 
-Cancel: https://web0.small-web.org/cancel/${confirmationCode}
+https://web0.small-web.org/cancel/${confirmationCode}
 
 Thank you.
 
