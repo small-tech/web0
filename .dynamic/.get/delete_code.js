@@ -36,11 +36,19 @@ module.exports = (request, response) => {
   const signatoryEmail = db.confirmationCodesToSignatoryEmails[code]
 
   if (signatoryEmail) {
-    const signatory = db.confirmedSignatories.find(signatory => signatory.email === signatoryEmail)
+    const signatoryIndex = -1
+    const signatory = db.confirmedSignatories.find((signatory, index) => {
+      if (signatory.email === signatoryEmail) {
+        signatoryIndex = index
+        return true
+      } else {
+        return false
+      }
+    })
 
     if (signatory) {
       // Delete the signatory request.
-      delete db.confirmedSignatories[signatoryEmail]
+      delete db.confirmedSignatories[signatoryIndex]
 
       // Also delete the code to email map as it is no longer necessary.
       delete db.confirmationCodesToSignatoryEmails[code]
