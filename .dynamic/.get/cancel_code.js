@@ -45,10 +45,6 @@ module.exports = (request, response) => {
       // Also delete the code to email map as it is no longer necessary.
       delete db.confirmationCodesToSignatoryEmails[code]
 
-      // Note: we do NOT delete the entry in db.confirmationCodesToSignatoryEmails
-      // as we will use it again if the person ever wants to delete their signature
-      // in the future.
-
       // Thank the person for signing.
       const page = template.replace('{{signatory}}', slugify(signatory.signatory))
       return response.html(page)
