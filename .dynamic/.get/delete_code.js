@@ -1,27 +1,14 @@
-const template = `<!DOCTYPE html>
-<html lang='en'>
-<head>
-  <meta charset='UTF-8'>
-  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-  <meta name='viewport' content='width=<device-width>, initial-scale=1.0'>
-  <title>web0 manifesto: Your signature has been removed</title>
-  <link rel='stylesheet' href='/styles.css'>
-</head>
-<body>
-  <section id='manifesto'>
-    <h1><span class='web0'>web0</span> manifesto</h1>
-    <h2>Signature removed</h2>
-    <p>Your signature for {{signatory}} as well as your linked data (your name and email address) has been removed.</p>
-  </section>
-  <footer>
-    <p>Made with ♥ by <a href='https://small-tech.org'>Small Technology Foundation</a></p> <p><strong>Like this? <a href='https://small-tech.org/fund-us'>Fund us!</a></strong></p>
-  </footer>
-</body>
-</html>
-`
-
 const redirectToError = require('../redirectToError')
 const slugify = str => require('slugify')(str, {lower: true, strict: true})
+
+const template = `${require('../header-template')('Your signature has been removed')}</title>
+
+<h2>Signature removed</h2>
+
+<p>Your signature for {{signatory}} as well as your linked data (your name and email address) has been removed.</p>
+
+${require('../footer-template')()}
+`
 
 module.exports = (request, response) => {
   const code = request.params.code
@@ -52,7 +39,7 @@ module.exports = (request, response) => {
     delete db.confirmationCodesToSignatoryEmails[code]
 
     // Inform the person that their signature has been deleted.
-    const page = template.replace('{{signatory}}', slugify(signatory.signatory))
+    const page = template.replace('{{signatory}}', signatory.signatory)
     return response.html(page)
   } else {
     redirectToError(response, 'Signatory not found.')

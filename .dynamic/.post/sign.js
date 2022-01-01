@@ -4,22 +4,12 @@ const redirectToError = require('../redirectToError')
 const urlExists = require('url-exist')
 
 const headerTemplate = `
-  <!DOCTYPE html>
-  <html lang='en'>
-  <head>
-    <meta charset='UTF-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <meta name='viewport' content='width=<device-width>, initial-scale=1.0'>
-    <title>web0 manifesto: Please wait, sending you a confirmation email…</title>
-    <link rel='stylesheet' href='/styles.css'>
-  </head>
-  <body>
-    <section id='manifesto'>
-      <h1><span class='web0'>web0</span> manifesto</h1>
-      <section id='progress'>
-        <h2><img class='spinner' src='/spinner.svg'>Please wait…</h2>
-        <p>We’re sending you a message at {{email_address}} to confirm your email address.</p>
-      </section>
+  ${require('../header-template')('Please wait, sending you a confirmation email…')}
+
+  <section id='progress'>
+    <h2><img class='spinner' src='/spinner.svg'>Please wait…</h2>
+    <p>We’re sending you a message at {{email_address}} to confirm your email address.</p>
+  </section>
 `
 
 const fadeOutProgressMessageTemplate = `
@@ -52,12 +42,7 @@ const failureTemplate = `
 
 const footerTemplate = `
       <p><a href='/'>Back.</a></p>
-    </section>
-    <footer>
-      <p>Made with ♥ by <a href='https://small-tech.org'>Small Technology Foundation</a></p> <p><strong>Like this? <a href='https://small-tech.org/fund-us'>Fund us!</a></strong></p>
-    </footer>
-  </body>
-  </html>
+    ${require('../footer-template')()}
 `
 
 // This is the loose regular expression used in the HTML5 standard

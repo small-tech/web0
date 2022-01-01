@@ -1,8 +1,13 @@
 const fs = require('fs')
 const path = require('path')
 const slugify = str => require('slugify')(str, {lower: true, strict: true})
+const header = require('../header-template')(/* title */ null, /* link to home? */ false)
+const footer = require('../footer-template')(/* close section tag */ false)
 
-const template = fs.readFileSync(path.join(__dirname, '..', 'index-template.html'), 'utf-8')
+const template =
+  header
+  + fs.readFileSync(path.join(__dirname, '..', 'index-template.html'), 'utf-8')
+  + footer
 
 module.exports = (request, response) => {
   let signatoryListItems = ''

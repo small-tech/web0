@@ -1,24 +1,14 @@
-const template = `<!DOCTYPE html>
-<html lang='en'>
-<head>
-  <meta charset='UTF-8'>
-  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-  <meta name='viewport' content='width=<device-width>, initial-scale=1.0'>
-  <title>web0 manifesto error</title>
-  <link rel='stylesheet' href='/styles.css'>
-</head>
-<body>
-  <section id='manifesto'>
-    <h1><span class='web0'>web0</span> manifesto</h1>
-    <h2 class='error'>Oops!</h2>
-    <p>{{error_message}}</p>
-    <p><a href='/'>Back.</a></p>
-  </section>
-  <footer>
-    <p>Made with ♥ by <a href='https://small-tech.org'>Small Technology Foundation</a></p> <p><strong>Like this? <a href='https://small-tech.org/fund-us'>Fund us!</a></strong></p>
-  </footer>
-</body>
-</html>`
+const template = `
+${require('../header-template')('Error!')}
+
+<h2 class='error'>Oops!</h2>
+
+<p>{{error_message}}</p>
+
+<p><a href='/'>Back.</a></p>
+
+${require('../footer-template')()}
+`
 
 module.exports = (request, response) => {
   console.log(request.query.message)

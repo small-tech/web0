@@ -15,7 +15,7 @@ h1 {
   line-height: 1;
 }
 
-.homeLink {
+h1 a {
   color: #111;
   text-decoration: none;
 }

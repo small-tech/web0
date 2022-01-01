@@ -2,27 +2,16 @@ const redirectToError = require('../redirectToError')
 const slugify = str => require('slugify')(str, {lower: true, strict: true})
 const sendMail = require('../sendMail')
 
-const template = `<!DOCTYPE html>
-<html lang='en'>
-<head>
-  <meta charset='UTF-8'>
-  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-  <meta name='viewport' content='width=<device-width>, initial-scale=1.0'>
-  <title>web0 manifesto: Thank you for signing!</title>
-  <link rel='stylesheet' href='/styles.css'>
-</head>
-<body>
-  <section id='manifesto'>
-    <h1><span class='web0'>web0</span> manifesto</h1>
-    <h2>Thank you!</h2>
-    <p>Your signature has now been added to the <span class='web0'>web0</span> manifesto.</p>
-    <p><a href='/#{{signature_id}}'>View your signature.</a></p>
-  </section>
-  <footer>
-    <p>Made with ♥ by <a href='https://small-tech.org'>Small Technology Foundation</a></p> <p><strong>Like this? <a href='https://small-tech.org/fund-us'>Fund us!</a></strong></p>
-  </footer>
-</body>
-</html>
+const template = `
+  ${require('../header-template')('Thank you for signing!')}
+
+  <h2>Thank you!</h2>
+
+  <p>Your signature has now been added to the <span class='web0'>web0</span> manifesto.</p>
+
+  <p><a href='/#{{signature_id}}'>View your signature.</a></p>
+
+  ${require('../footer-template')()}
 `
 
 module.exports = async (request, response) => {
@@ -64,7 +53,7 @@ View your signature at:
 
 https://web0.small-web.org/#${slugify(signatory.signatory)}
 
-If you ever want to remove your signature and related data that’s not display (your name and email address) from the manifesto in the future, please use the link below:
+If you ever want to remove your signature and related data that’s not displayed (your name and email address) from the manifesto in the future, please use the link below:
 
 https://web0.small-web.org/delete/${code}
 
