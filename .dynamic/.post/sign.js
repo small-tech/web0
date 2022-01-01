@@ -183,6 +183,8 @@ https://small-tech.org`
     // OK, email sent successfully, now persist the records in the database.
     db.confirmationCodesToSignatoryEmails[confirmationCode] = email
 
+    const date = new Date()
+
     // Create the signatory object and persist it in the database.
     db.pendingSignatories[email] = {
       id: confirmationCode,
@@ -190,7 +192,7 @@ https://small-tech.org`
       email,
       name,
       link,
-      date: new Date()
+      date
     }
 
     // Start fading out the progress message and wait for it complete
