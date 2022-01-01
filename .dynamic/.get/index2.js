@@ -5,7 +5,7 @@ const slugify = str => require('slugify')(str, {lower: true, strict: true})
 const template = fs.readFileSync(path.join(__dirname, '..', 'index-template.html'), 'utf-8')
 
 module.exports = (request, response) => {
-  let signatoryListItems = []
+  let signatoryListItems = null
   if (db.confirmedSignatories.length > 0) {
     // Build signatories list and add it to the page.
     signatoryListItems = db.confirmedSignatories.reduce((listItems, signatory) => {
@@ -13,9 +13,9 @@ module.exports = (request, response) => {
     }, '')
   }
 
-  if (signatoryListItems.length === 0) {
+  if (signatoryListItems === null) {
     // No signatories yet, display a message asking someone to be the first :)
-    signatoryListItems.push('<li>No one yet, why not be the first?</li>')
+    signatoryListItems = '<li>No one yet, why not be the first?</li>'
   }
 
   const signatoryList = `<ul id='signatories'>${signatoryListItems}</ul>`
