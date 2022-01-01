@@ -94,6 +94,12 @@ module.exports = async function (request, response) {
     return redirectToError(response, 'All form fields are required.')
   }
 
+  // Check lengths.
+  if (signatory.length > 93) { return redirectToError(response, 'Signatory name too long (max 93 characters).') }
+  if (name.length > 93) { return redirectToError(response, 'Name too long (max 93 characters)') }
+  if (email.length > 254) { return redirectToError(response, 'Email too long (max 254 characters') }
+  if (link.length > 256) { return redirectToError(response, 'Link too long (max 256 characters') }
+
   // Basic email validation.
   if (validEmailRegExp.exec(email) === null) {
     return redirectToError(response, `Sorry, that does not look like a valid email address (${email}).`)
