@@ -38,12 +38,16 @@ module.exports = function sendMail (to, subject, text, cc = null) {
 
     // The same message has to be sent to both the person in the to field
     // and to the person in the CC field, if there is one.
-    if (cc !== null) {
-      message.cc = cc
-      await _sendMail(cc, message)
+    try {
+      if (cc !== null) {
+        message.cc = cc
+        await _sendMail(cc, message)
+      }
+      await _sendMail(to, message)
+      resolve()
+    } catch (error) {
+      reject(error)
     }
-    await _sendMail(to, message)
-    resolve()
   })
 }
 
