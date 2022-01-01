@@ -112,7 +112,7 @@ module.exports = async function (request, response) {
   link = link.startsWith('https://') ? link : `https://${link}`
 
   // Validate the link using a regular expression as the first step.
-  if (validUrlRegExp.exec(link)) {
+  if (validUrlRegExp.exec(link) === null) {
     return redirectToError(response, `Sorry, that does not look like a valid web address (${link}).`)
   }
 
