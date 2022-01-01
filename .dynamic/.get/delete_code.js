@@ -35,12 +35,13 @@ module.exports = (request, response) => {
 
   let signatoryIndex = -1
   const signatory = db.confirmedSignatories.find((signatory, index) => {
-    if (signatory.id === code) {
+    // Signatory could be undefined if it has been deleted as we aren’t
+    // currently compacting the array structure.
+    if (signatory !== undefined && signatory.id === code) {
       signatoryIndex = index
       return true
-    } else {
-      return false
     }
+    return false
   })
 
   if (signatory) {
