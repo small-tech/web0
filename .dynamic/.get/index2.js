@@ -5,19 +5,21 @@ const slugify = str => require('slugify')(str, {lower: true, strict: true})
 const template = fs.readFileSync(path.join(__dirname, '..', 'index-template.html'), 'utf-8')
 
 module.exports = (request, response) => {
-  let page
-  if (db.confirmedSignatories.length === 0) {
-    // No signatories yet, display a message asking someone to be the first :)
-    page = template.replace("<ul id='signatories'></ul>", "<ul id='signatories'><li>No one yet, why not be the first?</li></ul>")
-  } else {
+  let signatoryListItems = []
+  if (db.confirmedSignatories.length > 0) {
     // Build signatories list and add it to the page.
-    const signatoryListItems = db.confirmedSignatories.reduce((listItems, signatory) => {
+    signatoryListItems = db.confirmedSignatories.reduce((listItems, signatory) => {
       return listItems += `\n<li id='${slugify(signatory.signatory)}'><a href='${signatory.link}' rel='nofollow'>${signatory.signatory}</a></li>`
     }, '')
-
-    const signatoryList = `<ul id='signatories'>${signatoryListItems}</ul>`
-    page = template.replace("<ul id='signatories'></ul>", signatoryList)
   }
+
+  if (signatoryListItems.length === 0) {
+    // No signatories yet, display a message asking someone to be the first :)
+    signatoryListItems.push('<li>No one yet, why not be the first?</li>')
+  }
+
+  const signatoryList = `<ul id='signatories'>${signatoryListItems}</ul>`
+  const page = template.replace("<ul id='signatories'></ul>", signatoryList)
 
   response.html(page)
 }
