@@ -64,6 +64,10 @@ const footerTemplate = `
 // extended to require a top-level domain.
 const validEmailRegExp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/
 
+// Check for URL syntax.
+// Mirrored from the client-side.
+const validUrlRegExp = /^(?:(?:https?|HTTPS?|ftp|FTP):\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-zA-Z\u00a1-\uffff0-9]-*)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]-*)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))\.?)(?::\d{2,})?(?:[/?#]\S*)?$/
+
 function delay (timeInMs) {
   return new Promise ((resolve, reject) => {
     setTimeout(() => {
@@ -92,7 +96,7 @@ module.exports = async function (request, response) {
 
   // Basic email validation.
   if (validEmailRegExp.exec(email) === null) {
-    return redirectToError(response, 'Sorry, that does not look like a valid email address.')
+    return redirectToError(response, `Sorry, that does not look like a valid email address (${email}).`)
   }
 
   // Ensure signatory with given email is not waiting for confirmation.
@@ -107,6 +111,12 @@ module.exports = async function (request, response) {
   link = link.startsWith('http://') ? link.replace('http://', 'https://') : link
   link = link.startsWith('https://') ? link : `https://${link}`
 
+  // Validate the link using a regular expression as the first step.
+  if (validUrlRegExp.exec(link)) {
+    return redirectToError(response, `Sorry, that does not look like a valid web address (${link}).`)
+  }
+
+  // Next validate the URL by creating a URL object from it.
   let url
   try {
     url = new URL(link)
@@ -144,7 +154,7 @@ module.exports = async function (request, response) {
     link
   }
 
-
+  // Email text.
   const text = `Hello ${name.split(' ')[0]},
 
 You (or someone who gave us your email address) has asked to sign the web0 manifesto on behalf of:
@@ -171,6 +181,7 @@ Just hit reply and I’ll CC in the folks at hello@small-tech.org for you.
 https://small-tech.org`
 
   try {
+    // Send email.
     const result = await sendMail(email, 'web0 manifesto signature confirmation request', text)
     // Start fading out the progress message and wait for it complete
     // before removing it from the DOM and fading in the result message.
