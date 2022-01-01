@@ -143,16 +143,6 @@ module.exports = async function (request, response) {
   // Create a random hash for the validation URL
   // and map that to the pending signatory.
   const confirmationCode = crypto.randomBytes(16).toString('hex')
-  db.confirmationCodesToSignatoryEmails[confirmationCode] = email
-
-  // Create the signatory object and persist it in the database.
-  db.pendingSignatories[email] = {
-    id: confirmationCode,
-    signatory,
-    email,
-    name,
-    link
-  }
 
   // Email text.
   const text = `Hello ${name.split(' ')[0]},
@@ -183,6 +173,19 @@ https://small-tech.org`
   try {
     // Send email.
     const result = await sendMail(email, 'web0 manifesto signature confirmation request', text)
+
+    // OK, email sent successfully, now persist the records in the database.
+    db.confirmationCodesToSignatoryEmails[confirmationCode] = email
+
+    // Create the signatory object and persist it in the database.
+    db.pendingSignatories[email] = {
+      id: confirmationCode,
+      signatory,
+      email,
+      name,
+      link
+    }
+
     // Start fading out the progress message and wait for it complete
     // before removing it from the DOM and fading in the result message.
     // Yes, we’re animating using the HTTP stream and CSS animations
