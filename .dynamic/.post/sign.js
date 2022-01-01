@@ -189,7 +189,8 @@ https://small-tech.org`
       signatory,
       email,
       name,
-      link
+      link,
+      date: new Date()
     }
 
     // Start fading out the progress message and wait for it complete
