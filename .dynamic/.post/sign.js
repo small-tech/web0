@@ -60,9 +60,9 @@ const footerTemplate = `
   </html>
 `
 
-// This is the loose regular expression used in the HTML5 standard.
-// Via https://www.abstractapi.com/tools/email-regex-guide
-const validEmailRegExp = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+// This is the loose regular expression used in the HTML5 standard
+// extended to require a top-level domain.
+const validEmailRegExp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/
 
 function delay (timeInMs) {
   return new Promise ((resolve, reject) => {

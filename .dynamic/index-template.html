@@ -45,7 +45,11 @@
       <li>
         <label for='email'>Your email <small>(used to verify your signature; will not be displayed)</small></label>
         <div class='inputWithCheckmark'>
-          <input id='email' name='email' type='email' required/>
+          <!--
+            Note: the default browser validation pattern allows email addresses without
+            top-level domains (because ivory towers). The pattern override fixes that.
+          -->
+          <input id='email' name='email' type='email' required pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$"/>
           <div class='checkmark'><img src='/checkmark.svg'></div>
         </div>
       </li>
