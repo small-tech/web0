@@ -33,7 +33,7 @@ module.exports = app => {
       signatories.push(
         `<tr>
           <td>${signatoryCount}</td>
-          <td>${signatory.signatory}</td>
+          <td>${signatory.signatory.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</td>
           <td><a href='${signatory.link}'>${signatory.link}</a></td>
           <td>${signatory.name}</td>
           <td><a href='mailto: ${signatory.email}'>${signatory.email}</a></td>
@@ -93,7 +93,7 @@ module.exports = app => {
       <p><strong>💀 Do you really want to delete the following signatory?</strong></p>
       <form method='POST' action='/admin/${db.admin.route}/delete/${id}' class='deleteConfirmation'>
         <ul class='signatoryDetails'>
-          <li><strong>Signatory</strong> ${signatory.signatory}</li>
+          <li><strong>Signatory</strong> ${signatory.signatory.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</li>
           <li><strong>Link</strong> ${signatory.link}</li>
           <li><strong>Name</strong> ${signatory.name}</li>
           <li><strong>Email</strong> ${signatory.email}</li>
@@ -126,7 +126,7 @@ module.exports = app => {
       <h2>Admin page</h2>
       <p>📈 <a href='https://${app.site.prettyLocation()}${app.site.stats.route}'>Site statistics</a></p>
       <h3>Signatories</h3>
-      <p>Signatory ${signatory.signatory} (${signatory.link}) submitted by ${signatory.name} (${signatory.email}) has been deleted.</p>
+      <p>Signatory ${signatory.signatory.replace(/</g, '&lt;').replace(/>/g, '&gt;')} (${signatory.link}) submitted by ${signatory.name} (${signatory.email}) has been deleted.</p>
       <p><a href='/admin/${db.admin.route}/'>Back to signatory list</a></p>
       ${footer()}
     `)

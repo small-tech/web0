@@ -3,6 +3,11 @@ const sendMail = require('../sendMail')
 const redirectToError = require('../redirectToError')
 const urlExists = require('url-exist')
 
+const emailBlacklist = [
+  // Disposable temporary email addresses.
+  'sharklasers.com'
+]
+
 const headerTemplate = `
   ${require('../header-template')('Please wait, sending you a confirmation email…')}
 
@@ -96,6 +101,13 @@ module.exports = async function (request, response) {
 
     <p>Please follow the link in the email we sent you to finalise your submission.</p>`)
   }
+
+  // Apply email blacklist.
+  emailBlacklist.forEach(blackListedDomain => {
+    if (email.indexOf(blackListedDomain) !== -1) {
+      return redirectToError(response, `Sorry, we don’t accept submissions with email addresses from ${blackListedDomain}.`)
+    }
+  })
 
   // Basic URL massaging (we only accept https because it’s three days to 2022
   // for goodness’ sake), validation, and sanitisation.
