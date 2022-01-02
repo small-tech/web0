@@ -40,7 +40,7 @@ const successTemplate = `
 const failureTemplate = `
       <section id='confirmationEmailResult'>
         <h2 class='error'>Sorry, could you not email you.</h2>
-        <p>The error details are below:</p>
+        <p>We got the following error message from your email server:</p>
         <pre><code>{{error}}</code></pre>
       </section>
 `

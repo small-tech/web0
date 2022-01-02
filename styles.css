@@ -138,6 +138,15 @@ a {
   color: darkslateblue;
 }
 
+/* Used to display error messages */
+pre {
+  white-space: pre-wrap;
+  background-color: black;
+  color: white;
+  padding: 1em;
+  font-size: 0.75em;
+}
+
 strong {
   font-weight: 800;
 }
