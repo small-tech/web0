@@ -37,11 +37,34 @@ const successTemplate = `
       </section>
 `
 
-const failureTemplate = `
+const failureTemplate = (error, signatory, link, name, email) => `
       <section id='confirmationEmailResult'>
         <h2 class='error'>Sorry, could you not email you.</h2>
         <p>We got the following error message from your email server:</p>
-        <pre><code>{{error}}</code></pre>
+        <pre><code>${error}</code></pre>
+
+        <h3>Greylist error?</h3>
+
+        <form method='POST' action='/sign' class='greylistError'>
+
+          <p>If the error looks like <a href='https://en.wikipedia.org/wiki/Greylisting_(email)'>a greylisting error</a>, you can <strong>try waiting a while before retrying the request using the button below.</strong></p>
+
+          <p>Please also contact your email provider and ask them to reconsider using greylisting. <a href='https://en.wikipedia.org/wiki/Greylisting_(email)#Disadvantages'>It is no longer effective against spam</a> but it does make life harder for transactional emails like this.</p>
+
+          <input type='hidden' name='signatory' value='${signatory}'>
+          <input type='hidden' name='link' value='${link}'>
+          <input type='hidden' name='name' value='${name}'>
+          <input type='hidden' name='email' value='${email}'>
+
+          <input type='submit' value='Retry'>
+
+        </form>
+
+        <h3>Blacklist error?</h3>
+
+        <p>If it looks like your server has blacklisted us, please contact your email provider and ask them to remove us from their blacklist.</p>
+
+        <p>(This site is hosted on <a href='https://https://www.hetzner.com/'>Hetzner</a> and it’s possible that they’ve blacklisted a URL or IP address from Hetzner that was used for nefarious purposes in the past.)</p>
       </section>
 `
 
@@ -75,9 +98,9 @@ if (db.pendingSignatories == undefined) {
 
 module.exports = async function (request, response) {
   const signatory = request.body.signatory
+  let link = request.body.link
   const name = request.body.name
   const email = request.body.email
-  let link = request.body.link
 
   // Basic validation on inputs.
   if (signatory === '' || link === '' || name === '' || email === '') {

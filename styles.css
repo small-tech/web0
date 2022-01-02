@@ -269,19 +269,20 @@ footer p {
 
 /* Admin: delete confirmation form */
 
-form.deleteConfirmation {
+form.deleteConfirmation, form.greylistError {
   padding-top: 0.25em;
   font-size: 1em;
+  padding-right: 1em;
+}
+
+form.greylistError {
+  margin-bottom: 2em;
 }
 
 form.deleteConfirmation strong {
   display: inline-block;
   font-size: 0.75em;
   margin-bottom: 0.25em;
-}
-
-form.deleteConfirmation {
-  padding-right: 1em;
 }
 
 form.deleteConfirmation input[type='submit'] {
