@@ -142,6 +142,51 @@ strong {
   font-weight: 800;
 }
 
+table {
+  table-layout: fixed;
+  width: 100%;
+  font-size: 0.6em;
+  border-collapse: collapse;
+}
+
+tr > * {
+  padding: 0.5em;
+}
+
+thead tr {
+  background-color: #333;
+  color: white;
+}
+
+th {
+  padding: 1em;
+  padding-left: 0 ;
+  font-size: 1em;
+  text-align: left;
+}
+
+th:first-of-type, td:first-of-type {
+  padding-left: 1em;
+}
+
+th:first-of-type {
+  width: 4em;
+}
+
+th:last-of-type {
+  width: 2em;
+}
+
+td {
+  /* border: 1px solid red; */
+  word-break: break-word;
+  /* text-align: center; */
+}
+
+tbody tr:nth-of-type(2n) {
+  background-color: #eee;
+}
+
 footer {
   margin-top: 3em;
   margin-bottom: 2em;
@@ -151,6 +196,10 @@ footer {
 
 footer p {
   margin-bottom: 1em;
+}
+
+.deleteLink {
+  text-decoration: none;
 }
 
 .trivia {

@@ -5,10 +5,71 @@ const SMTPServer = require('smtp-server').SMTPServer
 const simpleParser = require('mailparser').simpleParser
 const sendMail = require('./sendMail')
 
+const crypto = require('crypto')
+
+const header = require('./header-template')
+const footer = require('./footer-template')
+
+// Create a cryptographically-secure path for the admin route
+// and save it in a table called admin in the built-in JSDB database.
+if (db.admin === undefined) {
+  db.admin = {}
+  db.admin.route = crypto.randomBytes(16).toString('hex')
+}
+
 module.exports = app => {
-  // We don’t have any custom routes. We’re just using this as a convenient
-  // location to carry out one-time global initialisation for the
-  // SMTP server.
+  // This is where we define the secret admin route and carry out one-time
+  // global initialisation for the SMTP server.
+
+  // Add the admin route using the cryptographically-secure path.
+  app.get(`/admin/${db.admin.route}`, (request, response) => {
+
+    const signatories = []
+    let signatoryCount = 0
+    db.confirmedSignatories.forEach(signatory => {
+      signatoryCount++
+      signatories.push(
+        `<tr>
+          <td>${signatoryCount}</td>
+          <td>${signatory.signatory}</td>
+          <td><a href='${signatory.link}'>${signatory.link}</a></td>
+          <td>${signatory.name}</td>
+          <td><a href='mailto: ${signatory.email}'>${signatory.email}</a></td>
+          <td><a class='deleteLink' href='' nofollow>❌</a></td>
+        </tr>`
+      )
+    })
+
+    response.html(`
+    ${header()}
+    <h2>Admin page</h2>
+    <p>📈 <a href='https://${app.site.prettyLocation()}${app.site.stats.route}'>Site statistics</a></p>
+    <h3>Signatories</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Signatory</th>
+          <th>Link</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${signatories.join('\n')}
+      </tbody>
+    </table>
+    ${footer()}
+  `)
+  })
+
+  // Add a post route for deleting signatories.
+  // TODO
+
+  // Output the admin path to the logs so we know what it is.
+  // (If someone has ssh access to our server to see this all is already lost anyway.)
+  console.log(`   🔑️    ❨web0❩ Admin page is at /admin/${db.admin.route}`)
 
   console.log('   📬    ❨web0❩ Starting SMTP server.')
 
