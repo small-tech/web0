@@ -5,6 +5,8 @@ const SMTPServer = require('smtp-server').SMTPServer
 const simpleParser = require('mailparser').simpleParser
 const sendMail = require('./sendMail')
 
+const redirectToError = require('./redirectToError')
+
 const crypto = require('crypto')
 
 const header = require('./header-template')
@@ -21,7 +23,7 @@ module.exports = app => {
   // This is where we define the secret admin route and carry out one-time
   // global initialisation for the SMTP server.
 
-  // Add the admin route using the cryptographically-secure path.
+  // Add admin route using cryptographically-secure secret path.
   app.get(`/admin/${db.admin.route}`, (request, response) => {
 
     const signatories = []
@@ -35,39 +37,102 @@ module.exports = app => {
           <td><a href='${signatory.link}'>${signatory.link}</a></td>
           <td>${signatory.name}</td>
           <td><a href='mailto: ${signatory.email}'>${signatory.email}</a></td>
-          <td><a class='deleteLink' href='' nofollow>❌</a></td>
+          <td><a class='deleteLink' href='/admin/${db.admin.route}/confirm-delete/${signatory.id}' nofollow>❌</a></td>
         </tr>`
       )
     })
 
     response.html(`
-    ${header()}
-    <h2>Admin page</h2>
-    <p>📈 <a href='https://${app.site.prettyLocation()}${app.site.stats.route}'>Site statistics</a></p>
-    <h3>Signatories</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Signatory</th>
-          <th>Link</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        ${signatories.join('\n')}
-      </tbody>
-    </table>
-    ${footer()}
-  `)
+      ${header()}
+      <h2>Admin page</h2>
+      <p>📈 <a href='https://${app.site.prettyLocation()}${app.site.stats.route}'>Site statistics</a></p>
+      <h3>Signatories</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Signatory</th>
+            <th>Link</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${signatories.join('\n')}
+        </tbody>
+      </table>
+      ${footer()}
+    `)
   })
 
-  // Add a post route for deleting signatories.
-  // TODO
+  function findSignatoryWithId (id) {
+    let _index = null
+    const signatory = db.confirmedSignatories.find((value, index) => {
+      if (value) {
+        if (value.id === id) {
+          _index = index
+          return true
+        }
+      }
+    })
+    return [signatory, _index]
+  }
 
-  // Output the admin path to the logs so we know what it is.
+  // Add GET route to confirm deletion of signatory.
+  app.get(`/admin/${db.admin.route}/confirm-delete/:id`, (request, response) => {
+
+    const id = request.params.id
+    const [signatory] = findSignatoryWithId(id)
+
+    response.html(`
+      ${header()}
+      <h2>Admin page</h2>
+      <p>📈 <a href='https://${app.site.prettyLocation()}${app.site.stats.route}'>Site statistics</a></p>
+      <h3>Signatories</h3>
+      <p><strong>💀 Do you really want to delete the following signatory?</strong></p>
+      <form method='POST' action='/admin/${db.admin.route}/delete/${id}' class='deleteConfirmation'>
+        <ul class='signatoryDetails'>
+          <li><strong>Signatory</strong> ${signatory.signatory}</li>
+          <li><strong>Link</strong> ${signatory.link}</li>
+          <li><strong>Name</strong> ${signatory.name}</li>
+          <li><strong>Email</strong> ${signatory.email}</li>
+        </ul>
+        <input type='hidden' name='id' value='${id}'></input>
+        <input type='submit' value='💀 Delete'></input>
+      </form>
+      ${footer()}
+    `)
+  })
+
+  // Add POST route to actually delete signatory.
+  app.post(`/admin/${db.admin.route}/delete/:id`, (request, response) => {
+    const id = request.body.id
+
+    if (id == undefined) {
+      return redirectToError(response, 'Nothing to delete.')
+    }
+
+    const [signatory, index] = findSignatoryWithId(id)
+
+    if (index === null) {
+      return redirectToError(response, 'Signatory not found.')
+    }
+
+    delete db.confirmedSignatories[index]
+
+    response.html(`
+      ${header()}
+      <h2>Admin page</h2>
+      <p>📈 <a href='https://${app.site.prettyLocation()}${app.site.stats.route}'>Site statistics</a></p>
+      <h3>Signatories</h3>
+      <p>Signatory ${signatory.signatory} (${signatory.link}) submitted by ${signatory.name} (${signatory.email}) has been deleted.</p>
+      <p><a href='/admin/${db.admin.route}/'>Back to signatory list</a></p>
+      ${footer()}
+    `)
+  })
+
+  // Output admin path to logs so we know what it is.
   // (If someone has ssh access to our server to see this all is already lost anyway.)
   console.log(`   🔑️    ❨web0❩ Admin page is at /admin/${db.admin.route}`)
 

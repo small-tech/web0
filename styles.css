@@ -254,6 +254,35 @@ footer p {
   background-color: yellow;
 }
 
+.signatoryDetails {
+  list-style: none;
+}
+
+/* Admin: delete confirmation form */
+
+form.deleteConfirmation {
+  padding-top: 0.25em;
+  font-size: 1em;
+}
+
+form.deleteConfirmation strong {
+  display: inline-block;
+  font-size: 0.75em;
+  margin-bottom: 0.25em;
+}
+
+form.deleteConfirmation {
+  padding-right: 1em;
+}
+
+form.deleteConfirmation input[type='submit'] {
+  background-color: darkred;
+}
+
+form.deleteConfirmation input[type='submit']:hover, form.deleteConfirmation input[type='submit']:focus {
+  background-color: red;
+}
+
 #progress {
   transition: opacity 1s;
   opacity: 100;
