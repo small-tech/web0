@@ -276,7 +276,7 @@ form.deleteConfirmation, form.greylistError {
 }
 
 form.greylistError {
-  margin-bottom: 2em;
+  margin-bottom: 2.5em;
 }
 
 form.deleteConfirmation strong {
