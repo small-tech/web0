@@ -14,7 +14,7 @@ module.exports = (request, response) => {
   if (db.confirmedSignatories.length > 0) {
     // Build signatories list and add it to the page.
     signatoryListItems = db.confirmedSignatories.reduce((listItems, signatory) => {
-      return listItems += `\n<li id='${slugify(signatory.signatory)}'><a href='${signatory.link}' rel='nofollow'>${signatory.signatory.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</a></li>`
+      return listItems += `\n<li id='${slugify(signatory.signatory)}'><a href='${signatory.link}' rel='nofollow'>${signatory.signatory}</a></li>`
     }, '')
   }
 

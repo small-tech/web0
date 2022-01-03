@@ -3,6 +3,7 @@
     "checkmark",
     "greylist",
     "mailparser",
+    "maxlength",
     "Rcpt"
   ]
 }

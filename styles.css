@@ -182,10 +182,6 @@ th:first-of-type {
   width: 4em;
 }
 
-th:last-of-type {
-  width: 2em;
-}
-
 td {
   /* border: 1px solid red; */
   word-break: break-word;
@@ -207,7 +203,11 @@ footer p {
   margin-bottom: 1em;
 }
 
-.deleteLink {
+.iconHeader {
+  width: 2em;
+}
+
+.iconLink {
   text-decoration: none;
 }
 

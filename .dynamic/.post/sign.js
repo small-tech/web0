@@ -97,7 +97,7 @@ if (db.pendingSignatories == undefined) {
 }
 
 module.exports = async function (request, response) {
-  const signatory = request.body.signatory
+  let signatory = request.body.signatory
   let link = request.body.link
   const name = request.body.name
   const email = request.body.email
@@ -112,6 +112,10 @@ module.exports = async function (request, response) {
   if (name.length > 93) { return redirectToError(response, 'Name too long (max 93 characters)') }
   if (email.length > 254) { return redirectToError(response, 'Email too long (max 254 characters') }
   if (link.length > 256) { return redirectToError(response, 'Link too long (max 256 characters') }
+
+  // Make sure signatory name doesn’t contain HTML.
+  // (We don’t want any silly alerts popping up.)
+  signatory = signatory.replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
   // Basic email validation.
   if (validEmailRegExp.exec(email) === null) {

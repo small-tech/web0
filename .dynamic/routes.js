@@ -33,11 +33,12 @@ module.exports = app => {
       signatories.push(
         `<tr>
           <td>${signatoryCount}</td>
-          <td>${signatory.signatory.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</td>
+          <td>${signatory.signatory}</td>
           <td><a href='${signatory.link}'>${signatory.link}</a></td>
           <td>${signatory.name}</td>
           <td><a href='mailto: ${signatory.email}'>${signatory.email}</a></td>
-          <td><a class='deleteLink' href='/admin/${db.admin.route}/confirm-delete/${signatory.id}' nofollow>❌</a></td>
+          <td><a class='iconLink' href='/admin/${db.admin.route}/edit/${signatory.id}' nofollow>✏️</a></td>
+          <td><a class='iconLink' href='/admin/${db.admin.route}/delete/${signatory.id}' nofollow>❌</a></td>
         </tr>`
       )
     })
@@ -55,7 +56,8 @@ module.exports = app => {
             <th>Link</th>
             <th>Name</th>
             <th>Email</th>
-            <th></th>
+            <th class='iconHeader'></th>
+            <th class='iconHeader'></th>
           </tr>
         </thead>
         <tbody>
@@ -79,8 +81,104 @@ module.exports = app => {
     return [signatory, _index]
   }
 
+  // Add GET route to edit signatory.
+  app.get(`/admin/${db.admin.route}/edit/:id`, (request, response) => {
+
+    const id = request.params.id
+    const [signatory] = findSignatoryWithId(id)
+
+    response.html(`
+      ${header()}
+      <h2>Admin page</h2>
+      <p>📈 <a href='https://${app.site.prettyLocation()}${app.site.stats.route}'>Site statistics</a></p>
+      <h3>Signatories</h3>
+      <p><strong>✏️ Edit signatory</strong></p>
+      <form method='POST' action='/admin/${db.admin.route}/edit/${id}' class='edit'>
+        <ul>
+          <li>
+            <label for='signatory'>Signatory</label>
+            <div class='inputWithCheckmark'>
+              <input id='signatory' name='signatory' value='${signatory.signatory}' type='text' required maxlength='93'/>
+              <div class='checkmark'><img src='/checkmark.svg'></div>
+            </div>
+          </li>
+          <li>
+            <label for='link'>Link</label>
+            <div class='inputWithCheckmark'>
+              <input id='link' name='link' type='url' value='${signatory.link}' required pattern='^(?:(?:https?|HTTPS?|ftp|FTP):\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-zA-Z\u00a1-\uffff0-9]-*)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]-*)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))\.?)(?::\d{2,})?(?:[/?#]\S*)?$' maxlength='256'/>
+              <div class='checkmark'><img src='/checkmark.svg'></div>
+            </div>
+          </li>
+          <li>
+            <label for='name'>Name</label>
+            <div class='inputWithCheckmark'>
+              <input id='name' name='name' value='${signatory.name}' type='text' required spellcheck='false' autocomplete='name' maxlength="93"/>
+              <div class='checkmark'><img src='/checkmark.svg'></div>
+            </div>
+          </li>
+          <li>
+            <label for='email'>Email</label>
+            <div class='inputWithCheckmark'>
+              <input id='email' name='email' type='email' value = '${signatory.email}' required spellcheck='false' autocomplete='email' maxlength='254' pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_\`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$"/>
+              <div class='checkmark'><img src='/checkmark.svg'></div>
+            </div>
+          </li>
+          <li>
+            <p class='authorisation'>I have authorisation from the person, project, or organisation above to sign this form in their name.</p>
+            <input type='submit' value='✏️ Update'></input>
+          </li>
+        </ul>
+        <input type='hidden' name='id' value='${id}'></input>
+      </form>
+      ${footer()}
+    `)
+  })
+
+  // Add POST route to actually update edited signatory.
+  app.post(`/admin/${db.admin.route}/edit/:id`, (request, response) => {
+    const id = request.body.id
+
+    // Note: we do not perform any server-side validation in this route
+    // as we treat data sent to admin routes as trusted. (If the admin
+    // route URL is compromised, we have bigger problems.)
+    const signatory = request.body.signatory
+    const link = request.body.link
+    const name = request.body.name
+    const email = request.body.email
+
+    if (id == undefined) {
+      return redirectToError(response, 'Nothing to update.')
+    }
+
+    const [currentSignatory, index] = findSignatoryWithId(id)
+
+    if (index === null) {
+      return redirectToError(response, 'Signatory not found.')
+    }
+
+    const updatedSignatory = { signatory, link, name, email }
+
+    db.confirmedSignatories[index] = updatedSignatory
+
+    response.html(`
+      ${header()}
+      <h2>Admin page</h2>
+      <p>📈 <a href='https://${app.site.prettyLocation()}${app.site.stats.route}'>Site statistics</a></p>
+      <h3>Signatories</h3>
+      <p>Signatory updated!</p>
+      <ul>
+        <li><strong>Signatory:</strong> ${signatory}</li>
+        <li><strong>Link:</strong> ${link}</li>
+        <li><strong>Name:</strong> ${name}</li>
+        <li><strong>Email:</strong> ${email}</li>
+      </ul>
+      <p><a href='/admin/${db.admin.route}/'>Back to signatory list</a></p>
+      ${footer()}
+    `)
+  })
+
   // Add GET route to confirm deletion of signatory.
-  app.get(`/admin/${db.admin.route}/confirm-delete/:id`, (request, response) => {
+  app.get(`/admin/${db.admin.route}/delete/:id`, (request, response) => {
 
     const id = request.params.id
     const [signatory] = findSignatoryWithId(id)
@@ -93,7 +191,7 @@ module.exports = app => {
       <p><strong>💀 Do you really want to delete the following signatory?</strong></p>
       <form method='POST' action='/admin/${db.admin.route}/delete/${id}' class='deleteConfirmation'>
         <ul class='signatoryDetails'>
-          <li><strong>Signatory</strong> ${signatory.signatory.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</li>
+          <li><strong>Signatory</strong> ${signatory.signatory}</li>
           <li><strong>Link</strong> ${signatory.link}</li>
           <li><strong>Name</strong> ${signatory.name}</li>
           <li><strong>Email</strong> ${signatory.email}</li>
@@ -126,7 +224,7 @@ module.exports = app => {
       <h2>Admin page</h2>
       <p>📈 <a href='https://${app.site.prettyLocation()}${app.site.stats.route}'>Site statistics</a></p>
       <h3>Signatories</h3>
-      <p>Signatory ${signatory.signatory.replace(/</g, '&lt;').replace(/>/g, '&gt;')} (${signatory.link}) submitted by ${signatory.name} (${signatory.email}) has been deleted.</p>
+      <p>Signatory ${signatory.signatory} (${signatory.link}) submitted by ${signatory.name} (${signatory.email}) has been deleted.</p>
       <p><a href='/admin/${db.admin.route}/'>Back to signatory list</a></p>
       ${footer()}
     `)
