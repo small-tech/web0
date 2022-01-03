@@ -81,6 +81,15 @@ const validEmailRegExp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-
 // Mirrored from the client-side.
 const validUrlRegExp = /^(?:(?:https?|HTTPS?|ftp|FTP):\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-zA-Z\u00a1-\uffff0-9]-*)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]-*)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))\.?)(?::\d{2,})?(?:[/?#]\S*)?$/
 
+function htmlEncode (text) {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
+}
+
 function delay (timeInMs) {
   return new Promise ((resolve, reject) => {
     setTimeout(() => {
@@ -115,7 +124,7 @@ module.exports = async function (request, response) {
 
   // Make sure signatory name doesn’t contain HTML.
   // (We don’t want any silly alerts popping up.)
-  signatory = signatory.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  signatory = htmlEncode(signatory)
 
   // Basic email validation.
   if (validEmailRegExp.exec(email) === null) {
