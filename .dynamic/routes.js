@@ -156,7 +156,7 @@ module.exports = app => {
       return redirectToError(response, 'Signatory not found.')
     }
 
-    const updatedSignatory = { signatory, link, name, email }
+    const updatedSignatory = { id, signatory, link, name, email }
 
     db.confirmedSignatories[index] = updatedSignatory
 
