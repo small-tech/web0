@@ -124,8 +124,7 @@ module.exports = app => {
             </div>
           </li>
           <li>
-            <p class='authorisation'>I have authorisation from the person, project, or organisation above to sign this form in their name.</p>
-            <input type='submit' value='✏️ Update'></input>
+            <input id='updateButton' type='submit' value='✏️ Update'></input>
           </li>
         </ul>
         <input type='hidden' name='id' value='${id}'></input>

@@ -293,6 +293,10 @@ form.deleteConfirmation input[type='submit']:hover, form.deleteConfirmation inpu
   background-color: red;
 }
 
+#updateButton {
+  margin-top: 0.5em;
+}
+
 #progress {
   transition: opacity 1s;
   opacity: 100;
