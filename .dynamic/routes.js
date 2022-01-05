@@ -9,6 +9,20 @@ const redirectToError = require('./redirectToError')
 
 const crypto = require('crypto')
 
+// This little snippet hides secrets from the address bar and the browser
+// history so that they are not inadvertently revealed in screenshots.
+const hideSecretsFromAddressBarAndBrowserHistory = `
+  <script>
+    const secretHexademicalStringOf32CharactersOrMore = /[0-9,a-z]{32,}/g
+
+    if (secretHexademicalStringOf32CharactersOrMore.exec(window.location) !== null) {
+      // Hide the secret URL fragment so it is not accidentally displayed
+      // in screenshots and is not added to the browser history.
+      history.replaceState({}, '', window.location.href.replace(secretHexademicalStringOf32CharactersOrMore, '…'))
+    }
+  </script>
+`
+
 const header = require('./header-template')
 const footer = require('./footer-template')
 
@@ -45,7 +59,7 @@ module.exports = app => {
 
     response.html(`
       ${header()}
-      <h2>Admin page</h2>
+      <h2><a href='/admin/${db.admin.route}'>Admin page</a></h2>
       <p>📈 <a href='https://${app.site.prettyLocation()}${app.site.stats.route}'>Site statistics</a></p>
       <h3>Signatories</h3>
       <table>
@@ -64,7 +78,7 @@ module.exports = app => {
           ${signatories.join('\n')}
         </tbody>
       </table>
-      ${footer()}
+      ${footer(hideSecretsFromAddressBarAndBrowserHistory)}
     `)
   })
 
@@ -89,7 +103,7 @@ module.exports = app => {
 
     response.html(`
       ${header()}
-      <h2>Admin page</h2>
+      <h2><a href='/admin/${db.admin.route}'>Admin page</a></h2>
       <p>📈 <a href='https://${app.site.prettyLocation()}${app.site.stats.route}'>Site statistics</a></p>
       <h3>Signatories</h3>
       <p><strong>✏️ Edit signatory</strong></p>
@@ -129,7 +143,7 @@ module.exports = app => {
         </ul>
         <input type='hidden' name='id' value='${id}'></input>
       </form>
-      ${footer()}
+      ${footer(hideSecretsFromAddressBarAndBrowserHistory)}
     `)
   })
 
@@ -161,7 +175,7 @@ module.exports = app => {
 
     response.html(`
       ${header()}
-      <h2>Admin page</h2>
+      <h2><a href='/admin/${db.admin.route}'>Admin page</a></h2>
       <p>📈 <a href='https://${app.site.prettyLocation()}${app.site.stats.route}'>Site statistics</a></p>
       <h3>Signatories</h3>
       <p>Signatory updated!</p>
@@ -172,7 +186,7 @@ module.exports = app => {
         <li><strong>Email:</strong> ${email}</li>
       </ul>
       <p><a href='/admin/${db.admin.route}/'>Back to signatory list</a></p>
-      ${footer()}
+      ${footer(hideSecretsFromAddressBarAndBrowserHistory)}
     `)
   })
 
@@ -184,7 +198,7 @@ module.exports = app => {
 
     response.html(`
       ${header()}
-      <h2>Admin page</h2>
+      <h2><a href='/admin/${db.admin.route}'>Admin page</a></h2>
       <p>📈 <a href='https://${app.site.prettyLocation()}${app.site.stats.route}'>Site statistics</a></p>
       <h3>Signatories</h3>
       <p><strong>💀 Do you really want to delete the following signatory?</strong></p>
@@ -198,7 +212,7 @@ module.exports = app => {
         <input type='hidden' name='id' value='${id}'></input>
         <input type='submit' value='💀 Delete'></input>
       </form>
-      ${footer()}
+      ${footer(hideSecretsFromAddressBarAndBrowserHistory)}
     `)
   })
 
@@ -220,12 +234,12 @@ module.exports = app => {
 
     response.html(`
       ${header()}
-      <h2>Admin page</h2>
+      <h2><a href='/admin/${db.admin.route}'>Admin page</a></h2>
       <p>📈 <a href='https://${app.site.prettyLocation()}${app.site.stats.route}'>Site statistics</a></p>
       <h3>Signatories</h3>
       <p>Signatory ${signatory.signatory} (${signatory.link}) submitted by ${signatory.name} (${signatory.email}) has been deleted.</p>
       <p><a href='/admin/${db.admin.route}/'>Back to signatory list</a></p>
-      ${footer()}
+      ${footer(hideSecretsFromAddressBarAndBrowserHistory)}
     `)
   })
 

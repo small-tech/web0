@@ -1,4 +1,4 @@
-module.exports = function (closeSectionTag = true) {
+module.exports = function (closeSectionTag = true, customContent = '') {
   return `
     ${closeSectionTag ? '</section>' : ''}
     <footer>
@@ -12,6 +12,7 @@ module.exports = function (closeSectionTag = true) {
 
       <p><a href='https://github.com/small-tech/web0'>View Source</a></p>
     </footer>
+    ${customContent}
     </body>
   </html>
   `
