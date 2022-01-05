@@ -15,7 +15,7 @@ const hideSecretsFromAddressBarAndBrowserHistory = `
   <script>
     const secretHexademicalStringOf32CharactersOrMore = /[0-9,a-z]{32,}/g
 
-    if (secretHexademicalStringOf32CharactersOrMore.exec(window.location) !== null) {
+    if (secretHexademicalStringOf32CharactersOrMore.exec(window.location.href) !== null) {
       // Hide the secret URL fragment so it is not accidentally displayed
       // in screenshots and is not added to the browser history.
       history.replaceState({}, '', window.location.href.replace(secretHexademicalStringOf32CharactersOrMore, '…'))
@@ -78,7 +78,7 @@ module.exports = app => {
           ${signatories.join('\n')}
         </tbody>
       </table>
-      ${footer(hideSecretsFromAddressBarAndBrowserHistory)}
+      ${footer(true, hideSecretsFromAddressBarAndBrowserHistory)}
     `)
   })
 
@@ -143,7 +143,7 @@ module.exports = app => {
         </ul>
         <input type='hidden' name='id' value='${id}'></input>
       </form>
-      ${footer(hideSecretsFromAddressBarAndBrowserHistory)}
+      ${footer(true, hideSecretsFromAddressBarAndBrowserHistory)}
     `)
   })
 
@@ -186,7 +186,7 @@ module.exports = app => {
         <li><strong>Email:</strong> ${email}</li>
       </ul>
       <p><a href='/admin/${db.admin.route}/'>Back to signatory list</a></p>
-      ${footer(hideSecretsFromAddressBarAndBrowserHistory)}
+      ${footer(true, hideSecretsFromAddressBarAndBrowserHistory)}
     `)
   })
 
@@ -212,7 +212,7 @@ module.exports = app => {
         <input type='hidden' name='id' value='${id}'></input>
         <input type='submit' value='💀 Delete'></input>
       </form>
-      ${footer(hideSecretsFromAddressBarAndBrowserHistory)}
+      ${footer(true, hideSecretsFromAddressBarAndBrowserHistory)}
     `)
   })
 
@@ -239,7 +239,7 @@ module.exports = app => {
       <h3>Signatories</h3>
       <p>Signatory ${signatory.signatory} (${signatory.link}) submitted by ${signatory.name} (${signatory.email}) has been deleted.</p>
       <p><a href='/admin/${db.admin.route}/'>Back to signatory list</a></p>
-      ${footer(hideSecretsFromAddressBarAndBrowserHistory)}
+      ${footer(true, hideSecretsFromAddressBarAndBrowserHistory)}
     `)
   })
 
