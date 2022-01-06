@@ -1,7 +1,7 @@
 module.exports = function (closeSectionTag = true, customContent = '') {
   return `
     ${closeSectionTag ? '</section>' : ''}
-    <footer>
+    <footer id='trivia'>
       <p>Made with ♥ by <a href='https://small-tech.org'>Small Technology Foundation</a></p>
 
       <p><strong>Like this? <a href='https://small-tech.org/fund-us'>Fund us!</a></strong></p>
