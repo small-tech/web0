@@ -61,7 +61,7 @@ module.exports = app => {
       ${header()}
       <h2><a href='/admin/${db.admin.route}'>Admin page</a></h2>
       <p>📈 <a href='https://${app.site.prettyLocation()}${app.site.stats.route}'>Site statistics</a></p>
-      <h3>Signatories</h3>
+      <h3>Signatories (${signatories.length})</h3>
       <table>
         <thead>
           <tr>
