@@ -145,6 +145,13 @@ module.exports = async function (request, response) {
     }
   })
 
+  // Apply ban list.
+  db.banned.forEach(bannedEmail => {
+    if (email === bannedEmail) {
+      return redirectToError(response, `Sorry, that email address has been banned.`)
+    }
+  })
+
   // Basic URL massaging (we only accept https because it’s three days to 2022
   // for goodness’ sake), validation, and sanitisation.
   link = link.startsWith('http://') ? link.replace('http://', 'https://') : link

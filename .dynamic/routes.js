@@ -33,6 +33,10 @@ if (db.admin === undefined) {
   db.admin.route = crypto.randomBytes(16).toString('hex')
 }
 
+if (db.banned === undefined) {
+  db.banned = []
+}
+
 module.exports = app => {
   // This is where we define the secret admin route and carry out one-time
   // global initialisation for the SMTP server.
@@ -53,6 +57,7 @@ module.exports = app => {
           <td><a href='mailto: ${signatory.email}'>${signatory.email}</a></td>
           <td><a class='iconLink' href='/admin/${db.admin.route}/edit/${signatory.id}' nofollow>✏️</a></td>
           <td><a class='iconLink' href='/admin/${db.admin.route}/delete/${signatory.id}' nofollow>❌</a></td>
+          <td><input type='checkbox' name='ban' value='${signatory.id}'></input>
         </tr>`
       )
     })
@@ -62,23 +67,27 @@ module.exports = app => {
       <h2><a href='/admin/${db.admin.route}'>Admin page</a></h2>
       <p>📈 <a href='https://${app.site.prettyLocation()}${app.site.stats.route}'>Site statistics</a></p>
       <h3>Signatories (${signatories.length})</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Signatory</th>
-            <th>Link</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th class='iconHeader'></th>
-            <th class='iconHeader'></th>
-          </tr>
-        </thead>
-        <tbody>
-          ${signatories.join('\n')}
-        </tbody>
-      </table>
-      ${footer(true, hideSecretsFromAddressBarAndBrowserHistory)}
+      <form class='admin' method='POST' action='/admin/${db.admin.route}/ban'>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Signatory</th>
+              <th>Link</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th class='iconHeader'></th>
+              <th class='iconHeader'></th>
+              <th class='iconHeader'></th>
+            </tr>
+          </thead>
+          <tbody>
+            ${signatories.join('\n')}
+          </tbody>
+        </table>
+      <input class='admin' type='submit' name='adminAction' value='Ban selected'></input>
+    </form>
+    ${footer(true, hideSecretsFromAddressBarAndBrowserHistory)}
     `)
   })
 
@@ -238,6 +247,64 @@ module.exports = app => {
       <p>📈 <a href='https://${app.site.prettyLocation()}${app.site.stats.route}'>Site statistics</a></p>
       <h3>Signatories</h3>
       <p>Signatory ${signatory.signatory} (${signatory.link}) submitted by ${signatory.name} (${signatory.email}) has been deleted.</p>
+      <p><a href='/admin/${db.admin.route}/'>Back to signatory list</a></p>
+      ${footer(true, hideSecretsFromAddressBarAndBrowserHistory)}
+    `)
+  })
+
+  // Add POST route to ban signatories.
+  //
+  // (Banning adds email address to the banned table in the database in addition
+  // to deleting the corresponding signature.)
+  app.post(`/admin/${db.admin.route}/ban/`, (request, response) => {
+    let ban = request.body.ban
+
+    if (typeof ban === 'string') {
+      ban = [ban]
+    }
+
+    console.log('Ban', ban)
+
+    if (ban == undefined) {
+      return redirectToError(response, 'Nothing to ban.')
+    }
+
+    const bannedEmails = []
+
+    ban.forEach(id => {
+      const [signatory, index] = findSignatoryWithId(id)
+
+      if (index === null) {
+        return redirectToError(response, `Signatory with id ${id} not found.`)
+      }
+
+      const emailToBan = db.confirmedSignatories[index].email
+
+      if (emailToBan === null) {
+        return redirectToError(response, `Cannot ban signatory with id ${id}: email is null.`)
+      }
+
+      console.log('Banning', emailToBan)
+      db.banned.push(emailToBan)
+
+      bannedEmails.push(emailToBan)
+
+      console.log('Deleting signature of', emailToBan)
+      delete db.confirmedSignatories[index]
+    })
+
+    const bannedEmailsListHtml = bannedEmails.reduce((html, emailAddress) => html += `<li>${emailAddress}</li>`, '')
+
+    response.html(`
+      ${header()}
+      <h2><a href='/admin/${db.admin.route}'>Admin page</a></h2>
+      <p>📈 <a href='https://${app.site.prettyLocation()}${app.site.stats.route}'>Site statistics</a></p>
+      <h3>Signatories</h3>
+      <p>The following spammers have been banned:</p>
+      <h2>👋🤓</h2>
+      <ul>
+        ${bannedEmailsListHtml}
+      </ul>
       <p><a href='/admin/${db.admin.route}/'>Back to signatory list</a></p>
       ${footer(true, hideSecretsFromAddressBarAndBrowserHistory)}
     `)
