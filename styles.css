@@ -221,6 +221,10 @@ footer p {
   color: brown;
 }
 
+.refreshLink {
+  text-align: center;
+}
+
 .iconHeader {
   width: 2em;
 }

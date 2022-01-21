@@ -86,6 +86,7 @@ module.exports = app => {
           </tbody>
         </table>
       <input id='banButton' class='admin' type='submit' name='adminAction' value='Ban selected'></input>
+      <p class='refreshLink'><a href='/admin/${db.admin.route}/#banButton'>Refresh list</a></p>
     </form>
     ${footer(true, hideSecretsFromAddressBarAndBrowserHistory)}
     `)
