@@ -306,7 +306,7 @@ module.exports = app => {
       <ul>
         ${bannedEmailsListHtml}
       </ul>
-      <p><a href='/admin/${db.admin.route}/'>Back to signatory list</a></p>
+      <p><a href='/admin/${db.admin.route}/#banButton'>Back to signatory list</a></p>
       ${footer(true, hideSecretsFromAddressBarAndBrowserHistory)}
     `)
   })
