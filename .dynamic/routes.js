@@ -66,7 +66,7 @@ module.exports = app => {
       ${header()}
       <h2><a href='/admin/${db.admin.route}'>Admin page</a></h2>
       <p>📈 <a href='https://${app.site.prettyLocation()}${app.site.stats.route}'>Site statistics</a></p>
-      <h3>Signatories (${signatories.length})</h3>
+      <h3>Signatories (${signatories.length}) <a href='#banButton'>↓</a></h3>
       <form class='admin' method='POST' action='/admin/${db.admin.route}/ban'>
         <table>
           <thead>
@@ -85,7 +85,7 @@ module.exports = app => {
             ${signatories.join('\n')}
           </tbody>
         </table>
-      <input class='admin' type='submit' name='adminAction' value='Ban selected'></input>
+      <input id='banButton' class='admin' type='submit' name='adminAction' value='Ban selected'></input>
     </form>
     ${footer(true, hideSecretsFromAddressBarAndBrowserHistory)}
     `)
