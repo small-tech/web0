@@ -213,6 +213,14 @@ footer p {
   margin-bottom: 1em;
 }
 
+.spammers {
+  width: 100%;
+  height: 50vh;
+  font-size: 0.75em;
+  font-family: monospace;
+  color: brown;
+}
+
 .iconHeader {
   width: 2em;
 }
