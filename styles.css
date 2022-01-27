@@ -355,6 +355,12 @@ form.deleteConfirmation input[type='submit']:hover, form.deleteConfirmation inpu
   }
 }
 
+@media only screen and (min-width: 800px) {
+  #signatories {
+    columns: 2;
+  }
+}
+
 /* Web fonts */
 
 /* Fira Code subset, we only use the following glyphs: web0 */
