@@ -1,78 +1,78 @@
-    <ol class='blackboard'>
-      <li>web3 = <strong>decentralisation</strong> + blockchain + NFTs + metaverse</li>
-      <li><strong>web0</strong> = web3 - blockchain - NFTs - metaverse</li>
-      <li><strong>web0 = decentralisation</strong></li>
-    </ol>
-    <p><span class='web0'>web0</span> is the decentralised web.</p>
-    <p class='toWit'>In other words, <span class='andICantEmphasiseThisEnough'><span class='web0'>web0</span> is web3 without all the corporate right-libertarian Silicon Valley bullshit.</span></p>
-  </section>
-  <form id='sign' action='/sign' method='POST'>
-    <h2>Sign</h2>
-    <ul>
-      <li>
-        <label for='signatory'>On behalf of (person, project, or organisation name)</label>
-        <div class='inputWithCheckmark'>
-          <!--
-            The max length is set to three lines at default body width of the uppercase
-            W glyph in the selected font (and ~ two lines of regular mixed text).
+<ol class='blackboard'>
+  <li>web3 = <strong>decentralisation</strong> + blockchain + NFTs + metaverse</li>
+  <li><strong>web0</strong> = web3 - blockchain - NFTs - metaverse</li>
+  <li><strong>web0 = decentralisation</strong></li>
+</ol>
+<p><span class='web0'>web0</span> is the decentralised web.</p>
+<p class='toWit'>In other words, <span class='andICantEmphasiseThisEnough'><span class='web0'>web0</span> is web3 without all the corporate right-libertarian Silicon Valley bullshit.</span></p>
+</section>
+<form id='sign' action='/sign' method='POST'>
+<h2>Sign</h2>
+<ul>
+  <li>
+    <label for='signatory'>On behalf of (person, project, or organisation name)</label>
+    <div class='inputWithCheckmark'>
+      <!--
+        The max length is set to three lines at default body width of the uppercase
+        W glyph in the selected font (and ~ two lines of regular mixed text).
 
-            This does, sadly, mean UK Company No. 04120480 will not be able to sign the manifesto :)
-            https://find-and-update.company-information.service.gov.uk/company/04120480
-          -->
-          <input id='signatory' name='signatory' type='text' required maxlength='93'/>
-          <div class='checkmark'><img src='/checkmark.svg'></div>
-        </div>
-      </li>
-      <li>
-        <label for='link'>Web site of signatory</label>
-        <div class='inputWithCheckmark'>
-          <!--
-            Default HTML5 url validation pattern allows urls without
-            top-level domains (e.g., localhost). The pattern override doesn’t.
+        This does, sadly, mean UK Company No. 04120480 will not be able to sign the manifesto :)
+        https://find-and-update.company-information.service.gov.uk/company/04120480
+      -->
+      <input id='signatory' name='signatory' type='text' required maxlength='93'/>
+      <div class='checkmark'><img src='/checkmark.svg'></div>
+    </div>
+  </li>
+  <li>
+    <label for='link'>Web site of signatory</label>
+    <div class='inputWithCheckmark'>
+      <!--
+        Default HTML5 url validation pattern allows urls without
+        top-level domains (e.g., localhost). The pattern override doesn’t.
 
-            The 256 character max limit should allow all domains and, practically,
-            any URL that anyone could conceivably want to type in. I mean, if you’re
-            hitting this limit, you’re probably attempting something fishy.
-            (And yes, of course, all fields are validated on the server.)
-          -->
-          <input id='link' name='link' type='url' value='https://' required pattern='^https:\/\/[^ "<>%{}|\\^`]+\.[^ "<>%{}|\\^`]+$' maxlength='256'/>
-          <div class='checkmark'><img src='/checkmark.svg'></div>
-        </div>
-      </li>
-      <li>
-        <label for='name'>Your name <small>(so we know who’s submitting this; will not be displayed)</small></label>
-        <div class='inputWithCheckmark'>
-          <!--
-            The max length is the same as the signatory max length and will, sadly,
-            keep some people from signing the manifesto (https://largest.org/people/names/)
-            but should be fine for the ~ 99.99999th percentile.
-          -->
-          <input id='name' name='name'type='text' required spellcheck='false' autocomplete='name' maxlength="93"/>
-          <div class='checkmark'><img src='/checkmark.svg'></div>
-        </div>
-      </li>
-      <li>
-        <label for='email'>Your email <small>(used to verify your signature; will not be displayed)</small></label>
-        <div class='inputWithCheckmark'>
-          <!--
-            Default HTML5 email validation pattern allows email addresses without
-            top-level domains. The pattern override fixes that.
+        The 256 character max limit should allow all domains and, practically,
+        any URL that anyone could conceivably want to type in. I mean, if you’re
+        hitting this limit, you’re probably attempting something fishy.
+        (And yes, of course, all fields are validated on the server.)
+      -->
+      <input id='link' name='link' type='url' value='https://' required pattern='^https:\/\/[^ "<>%{}|\\^`]+\.[^ "<>%{}|\\^`]+$' maxlength='256'/>
+      <div class='checkmark'><img src='/checkmark.svg'></div>
+    </div>
+  </li>
+  <li>
+    <label for='name'>Your name <small>(so we know who’s submitting this; will not be displayed)</small></label>
+    <div class='inputWithCheckmark'>
+      <!--
+        The max length is the same as the signatory max length and will, sadly,
+        keep some people from signing the manifesto (https://largest.org/people/names/)
+        but should be fine for the ~ 99.99999th percentile.
+      -->
+      <input id='name' name='name'type='text' required spellcheck='false' autocomplete='name' maxlength="93"/>
+      <div class='checkmark'><img src='/checkmark.svg'></div>
+    </div>
+  </li>
+  <li>
+    <label for='email'>Your email <small>(used to verify your signature; will not be displayed)</small></label>
+    <div class='inputWithCheckmark'>
+      <!--
+        Default HTML5 email validation pattern allows email addresses without
+        top-level domains. The pattern override fixes that.
 
-            Maximum length of 254 is based on maximum length of reverse-path or forward-path
-            (256 characters including surrounding < and >) in RFC 2821.
-            https://datatracker.ietf.org/doc/html/rfc2821#section-4.5.3.1
-          -->
-          <input id='email' name='email' type='email' required spellcheck='false' autocomplete='email' maxlength='254' pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$"/>
-          <div class='checkmark'><img src='/checkmark.svg'></div>
-        </div>
-      </li>
-      <li>
-        <p class='authorisation'>I have authorisation from the person, project, or organisation above to sign this form in their name.</p>
-        <input type='submit' value='Sign the manifesto'></input>
-      </li>
-    </ul>
-  </form>
+        Maximum length of 254 is based on maximum length of reverse-path or forward-path
+        (256 characters including surrounding < and >) in RFC 2821.
+        https://datatracker.ietf.org/doc/html/rfc2821#section-4.5.3.1
+      -->
+      <input id='email' name='email' type='email' required spellcheck='false' autocomplete='email' maxlength='254' pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$"/>
+      <div class='checkmark'><img src='/checkmark.svg'></div>
+    </div>
+  </li>
+  <li>
+    <p class='authorisation'>I have authorisation from the person, project, or organisation above to sign this form in their name.</p>
+    <input type='submit' value='Sign the manifesto'></input>
+  </li>
+</ul>
+</form>
 
-  <h2>Signed</h2>
+<h2>✒️ Signed</h2>
 
-  <ul id='signatories'></ul>
+<ul id='signatories'></ul>

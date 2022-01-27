@@ -329,12 +329,21 @@ form.deleteConfirmation input[type='submit']:hover, form.deleteConfirmation inpu
   opacity: 0;
 }
 
+#signatories {
+  padding-left: 1em;
+}
+
 #signatories li {
+  list-style-type: none;
   font-family: 'Reenie Beanie', cursive;
   font-size: 1.5em;
   line-height: 1;
-  list-style-type: " ✒️ ";
   margin-bottom: 0.5em;
+  border-bottom: 1px solid #ccc;
+}
+
+#signatories a {
+  text-decoration: none;
 }
 
 #manifesto {
@@ -355,9 +364,12 @@ form.deleteConfirmation input[type='submit']:hover, form.deleteConfirmation inpu
   }
 }
 
-@media only screen and (min-width: 800px) {
+@media only screen and (min-width: 720px) {
   #signatories {
-    columns: 2;
+    display: grid;
+    column-gap: 3em;
+    grid-template-columns: 1fr 1fr;
+    /* columns: 2; */
   }
 }
 
