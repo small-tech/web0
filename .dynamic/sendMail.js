@@ -59,8 +59,21 @@ function _sendMail (to, message) {
 
     if (mx.length > 0) {
       // OK, mail server found.
-      // Just use the first server returned.
-      const host = mx[0].exchange === 'mx.ethereal.email' ? 'smtp.ethereal.email' : mx[0].exchange
+      // DNS lookup may return MX records unsorted by priority.
+      // In principle we should always talk to the mail exchange with the highest priority.
+      const sortedMx = mx.sort(function(a, b) {
+        if (a.priority < b.priority) {
+          return -1;
+        }
+
+        if (a.priority > b.priority) {
+          return 1;
+        }
+
+        return 0;
+      });
+
+      const host = sortedMx[0].exchange === 'mx.ethereal.email' ? 'smtp.ethereal.email' : sortedMx[0].exchange
 
       // Create transporter to talk directly to mail server for provided email address.
       const transporter = nodemailer.createTransport({
